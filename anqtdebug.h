@@ -77,8 +77,8 @@
 /*          anDebugWrap(UniqueKeyNameToTurnOn4ThisClass,    */
 /*          anAssert(4>9,"So Each Class Have Its Own Key"));*/
 /************************************************************/
-#ifndef ANDEBUG_H
-#define ANDEBUG_H
+#ifndef ANQTDEBUG_H
+#define ANQTDEBUG_H
 /*********************DebugFlags*****************************/
 //_IsDebugEnabled Is Zero => Debug Is Globally Disabled
 #define _IsDebugEnabled 1
@@ -145,4 +145,4 @@
 #include <QDebug>
 #include <QVariant>
 /************************************************************/
-#endif // ANDEBUG_H
+#endif // ANQDEBUG_H
