@@ -49,6 +49,8 @@ int main(int argc, char *argv[])
     quint8 count0 = 0;
     while (true)
     {        
+        anqDebug("===================================================================");
+        anqDebug("=====================START A NEW UPDATE CYCLE =====================");
         //<Start Timing Here If Needed>
         QFile::remove(_DefaultConfigFilePath);
         do
@@ -70,6 +72,7 @@ int main(int argc, char *argv[])
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=7)
         {
+            anqDebug("=> Successful Download Config File !");
             count0 = 0;
             QFile configFile(_DefaultConfigFilePath);
             if (configFile.open(QIODevice::ReadOnly))
@@ -122,11 +125,13 @@ int main(int argc, char *argv[])
             }
             if (ScriptSha256.size() == 64)
             {
+                anqDebug("=> Valid ScriptSha256 !");
                 bool tmpCondition = false;
                 bool IsThereFileScriptSha256 = QFile::exists(_DefaultScriptSha256FilePath);
                 QString currentScriptSha256 = "";
                 if (IsThereFileScriptSha256)
                 {
+                    anqDebug("=> Found .ScriptSha256 File !");
                     QFile ScriptSha256File(_DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256");
                     if (ScriptSha256File.open(QIODevice::ReadOnly))
                     {
@@ -138,9 +143,16 @@ int main(int argc, char *argv[])
                        ScriptSha256File.close();
                     }
                     tmpCondition = (currentScriptSha256 != ScriptSha256);
+                    anDebugWrap(tmpCondition,
+                                anqDebug("=> Not Matched ScriptSha256 between the old script and the new one !");
+                                );
                 }
+                anDebugWrap(!IsThereFileScriptSha256,
+                                anqDebug("=> Not Found .ScriptSha256 File !");
+                                );
                 if (tmpCondition || !IsThereFileScriptSha256)
                 {
+                    anqDebug("=> Start Downloading New Script File !");
                     quint8 count1 = 0;
                     quint8 count2 = 0;
                     tmpCondition = true;
@@ -170,6 +182,7 @@ int main(int argc, char *argv[])
                         } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=3)
                         {
+                            anqDebug("=> Successful Download Script File !");
                             count1 = 0;
                             QFile::remove(_DefaultScriptSha256FilePath);//This line can absolutely be omitted without any further effect
                             do
@@ -191,6 +204,7 @@ int main(int argc, char *argv[])
                             } while(!QFile::exists(_DefaultScriptSha256FilePath));
                             if (count1<=3)
                             {
+                                anqDebug("=> Successful Calculate Sha256 Of The New Script !");
                                 count1 = 0;
                                 QFile ScriptSha256File(_DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256");
                                 if (ScriptSha256File.open(QIODevice::ReadOnly))
@@ -205,18 +219,21 @@ int main(int argc, char *argv[])
                             }
                             else
                             {
+                                anqDebug("=> Failed To Calculate Sha256 Of The New Script !");
                                 tmpCondition = false;
                                 break;
                             }
                         }
                         else
                         {
+                            anqDebug("=> Failed To Download The New Script !");
                             tmpCondition = false;
                             break;
                         }
                     } while (currentScriptSha256 != ScriptSha256);
                     if (tmpCondition && (count2<=3))
                     {
+                        anqDebug("=> Matched Sha256 Of The Downloaded Script !");
                         count2 = 0;
 #ifdef Q_OS_WIN
                         qDebug() << "This Program Is Only For Testing Purpose On Windows";
@@ -224,9 +241,14 @@ int main(int argc, char *argv[])
                         qDebug() << "Execute " _DefaultScriptFilePath " On Linux";
                         system("pause");
 #else
+                        anqDebug("=> EXECUTE SCRIPT ... !");
                         proc->execute(_LinuxCommandBash " " _DefaultScriptFilePath);
                         proc->waitForFinished(86400000);//timeout: 86400000ms=1day
 #endif
+                    }
+                    else
+                    {
+                        anqDebug("=> Error Occur Not Matched Sha256 Of The Downloaded Script !");
                     }
                 }
             }
@@ -236,6 +258,7 @@ int main(int argc, char *argv[])
             }
         }
         //<Stop Timing Here If Needed>
+        anqDebug("=> TAKE A BREAK !");
         int BreakInterval = 86400000/PollingRate;
         int TimePoint = CheckPoint.msecsSinceStartOfDay() - BreakInterval;
         int SleepTime = 0;
