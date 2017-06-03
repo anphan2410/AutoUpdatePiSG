@@ -64,8 +64,7 @@ int main(int argc, char *argv[])
             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
             system("pause");
 #else
-            anqDebug("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" _DefaultConfigFileLink "\"");
-            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" _DefaultConfigFileLink "\"");
+            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
             proc->waitForFinished(60000);//timeout 1 minute
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
@@ -165,7 +164,7 @@ int main(int argc, char *argv[])
                             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
                             system("pause");
 #else
-                            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" + ScriptLink + "\"");
+                            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
                             proc->waitForFinished(1800000);//timeout 30 minutes
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
