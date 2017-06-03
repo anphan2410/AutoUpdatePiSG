@@ -13,6 +13,7 @@
 #else
 #include <time.h>
 #define _TildeDirectory "/home/pi"
+#define _LinuxCommandBash "/bin/bash"
 #endif
 
 #define _DefaultAutoUpdatePiSGFolderPath _TildeDirectory "/AutoUpdatePiSG"
@@ -36,7 +37,9 @@ void GoSleep(int ms)
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+#ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
+#endif
     quint8 PollingRate = 16;//_DefaultPollingRate;
     QTime CheckPoint = QTime::fromString("16:36:00","hh:mm:ss");//_DefaultCheckPoint;
     QString ScriptSha256 = "";
@@ -62,6 +65,7 @@ int main(int argc, char *argv[])
             system("pause");
 #else
             proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" _DefaultConfigFileLink "\"");
+            proc->waitForFinished(60000);//timeout 1 minute
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=7)
@@ -116,10 +120,9 @@ int main(int argc, char *argv[])
                }
                configFile.close();
             }
-
             if (ScriptSha256.size() == 64)
             {
-                bool IsNewScriptFileNeeded = false;
+                bool tmpCondition = false;
                 bool IsThereFileScriptSha256 = QFile::exists(_DefaultScriptSha256FilePath);
                 QString currentScriptSha256 = "";
                 if (IsThereFileScriptSha256)
@@ -134,19 +137,20 @@ int main(int argc, char *argv[])
                        }
                        ScriptSha256File.close();
                     }
-                    IsNewScriptFileNeeded = (currentScriptSha256 != ScriptSha256);
+                    tmpCondition = (currentScriptSha256 != ScriptSha256);
                 }
-                if (IsNewScriptFileNeeded || !IsThereFileScriptSha256)
+                if (tmpCondition || !IsThereFileScriptSha256)
                 {
                     quint8 count1 = 0;
                     quint8 count2 = 0;
+                    tmpCondition = true;
                     do
                     {
                         if (++count2>3)
                         {
                             break;
                         }
-                        QFile::remove(_DefaultScriptSha256FilePath);
+                        QFile::remove(_DefaultScriptFilePath);
                         do
                         {
                             if (++count1>3)
@@ -155,24 +159,80 @@ int main(int argc, char *argv[])
                             }
 #ifdef Q_OS_WIN
                             qDebug() << "This Program Is Only For Testing Purpose On Windows";
-                            qDebug() << "Please MANUALLY Place File .ScriptSha256 Into The Following Path:";
+                            qDebug() << "Please MANUALLY Download Script AutoUpdatePiSG.sh";
+                            qDebug() << "Then Place Into The Following Path:";
                             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
                             system("pause");
 #else
                             proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" ScriptLink "\"");
+                            proc->waitForFinished(1800000);//timeout 30 minutes
 #endif
-                        } while (!QFile::exists(_DefaultScriptSha256FilePath));
+                        } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=3)
                         {
                             count1 = 0;
-
+                            QFile::remove(_DefaultScriptSha256FilePath);//This line can absolutely be omitted without any further effect
+                            do
+                            {
+                                if (++count1>3)
+                                {
+                                    break;
+                                }
+#ifdef Q_OS_WIN
+                                qDebug() << "This Program Is Only For Testing Purpose On Windows";
+                                qDebug() << "Please MANUALLY Write Sha256Sum Of AutoUpdatePiSG.sh Into .ScriptSha256";
+                                qDebug() << "Then Place File .ScriptSha256 Into The Following Path:";
+                                qDebug() << _DefaultAutoUpdatePiSGFolderPath;
+                                system("pause");
+#else
+                                proc->execute("sha256sum " _DefaultScriptFilePath " > " _DefaultScriptSha256FilePath);
+                                proc->waitForFinished(600000);//timeout 10 minutes
+#endif
+                            } while(!QFile::exists(_DefaultScriptSha256FilePath));
+                            if (count1<=3)
+                            {
+                                count1 = 0;
+                                QFile ScriptSha256File(_DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256");
+                                if (ScriptSha256File.open(QIODevice::ReadOnly))
+                                {
+                                   QTextStream readFile(&ScriptSha256File);
+                                   while (!readFile.atEnd())
+                                   {
+                                        currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                                   }
+                                   ScriptSha256File.close();
+                                }
+                            }
+                            else
+                            {
+                                tmpCondition = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            tmpCondition = false;
+                            break;
                         }
                     } while (currentScriptSha256 != ScriptSha256);
-                    if (count2<=3)
+                    if (tmpCondition && (count2<=3))
                     {
                         count2 = 0;
+#ifdef Q_OS_WIN
+                        qDebug() << "This Program Is Only For Testing Purpose On Windows";
+                        qDebug() << "Please MANUALLY Create A Result Equivalently As Follows,";
+                        qDebug() << "Execute " _DefaultScriptFilePath " On Linux";
+                        system("pause");
+#else
+                        proc->execute(_LinuxCommandBash " " _DefaultScriptFilePath);
+                        proc->waitForFinished(86400000);//timeout: 86400000ms=1day
+#endif
                     }
                 }
+            }
+            else
+            {
+                qDebug() << "Now replace program code";
             }
         }
         //<Stop Timing Here If Needed>
