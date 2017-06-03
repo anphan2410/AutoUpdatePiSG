@@ -188,7 +188,6 @@ int main(int argc, char *argv[])
                         {
                             anqDebug("=> Successful Download Script File !");
                             count1 = 0;
-                            QFile::remove(_DefaultScriptSha256FilePath);//This line can absolutely be omitted without any further effect
                             do
                             {
                                 if (++count1>3)
