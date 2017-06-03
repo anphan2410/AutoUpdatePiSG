@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
             system("pause");
 #else
+            anqDebug("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" _DefaultConfigFileLink "\"");
             proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" _DefaultConfigFileLink "\"");
             proc->waitForFinished(60000);//timeout 1 minute
 #endif
