@@ -256,6 +256,10 @@ int main(int argc, char *argv[])
                         anqDebug("=> Failed To Verify Sha256 Of The Downloaded Script !");
                     }
                 }
+                else
+                {
+                    anqDebug("=> No New Script !");
+                }
             }
             else
             {
