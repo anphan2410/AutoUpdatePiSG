@@ -138,7 +138,9 @@ int main(int argc, char *argv[])
                        QTextStream readFile(&ScriptSha256File);
                        while (!readFile.atEnd())
                        {
+                            anqDebug("=> Fetched .ScriptSha256 File ...");
                             currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                            anqDebug(_VarView(currentScriptSha256));
                        }
                        ScriptSha256File.close();
                     }
@@ -213,7 +215,9 @@ int main(int argc, char *argv[])
                                    QTextStream readFile(&ScriptSha256File);
                                    while (!readFile.atEnd())
                                    {
-                                        currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                                       anqDebug("=> Fetched .ScriptSha256 File ...");
+                                       currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                                       anqDebug(_VarView(currentScriptSha256));
                                    }
                                    ScriptSha256File.close();
                                 }
