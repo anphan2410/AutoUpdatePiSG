@@ -160,6 +160,7 @@ int main(int argc, char *argv[])
                     {
                         if (++count2>3)
                         {
+                            anqDebug("=> Not Matched Sha256 Of The New Script !");
                             break;
                         }
                         QFile::remove(_DefaultScriptFilePath);
@@ -248,7 +249,7 @@ int main(int argc, char *argv[])
                     }
                     else
                     {
-                        anqDebug("=> Error Occur Not Matched Sha256 Of The Downloaded Script !");
+                        anqDebug("=> Failed To Verify Sha256 Of The Downloaded Script !");
                     }
                 }
             }
