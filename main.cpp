@@ -66,9 +66,10 @@ int main(int argc, char *argv[])
             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
             system("pause");
 #else
-            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
+            anqDebug("=> Try Downloading Config File ...");
+            proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
             proc->waitForFinished(60000);//timeout 1 minute
-            GoSleep(777);//This line is added only based on practical experience. Don't remove!
+            anqDebug("=> Try Completed !");
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=7)
@@ -181,9 +182,10 @@ int main(int argc, char *argv[])
                             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
                             system("pause");
 #else
-                            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
+                            anqDebug("=> Try Downloading Script File ...");
+                            proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
                             proc->waitForFinished(1800000);//timeout 30 minutes
-                            GoSleep(777);//This line is added only based on practical experience. Don't remove!
+                            anqDebug("=> Try Completed !");
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=3)
@@ -203,8 +205,12 @@ int main(int argc, char *argv[])
                                 qDebug() << _DefaultAutoUpdatePiSGFolderPath;
                                 system("pause");
 #else
-                                proc->execute("sha256sum " _DefaultScriptFilePath " > " _DefaultScriptSha256FilePath);
+                                anqDebug("=> Try Calculating Sha256 Of The New Script File ...");
+                                proc->setStandardOutputFile(_DefaultScriptSha256FilePath);
+                                proc->start("sha256sum " _DefaultScriptFilePath);
                                 proc->waitForFinished(600000);//timeout 10 minutes
+
+                                anqDebug("=> Try Completed !");
 #endif
                             } while(!QFile::exists(_DefaultScriptSha256FilePath));
                             if (count1<=3)
@@ -249,10 +255,10 @@ int main(int argc, char *argv[])
                         qDebug() << "Execute " _DefaultScriptFilePath " On Linux";
                         system("pause");
 #else
-                        anqDebug("=> EXECUTE SCRIPT ... !");
+                        anqDebug("=> TRY EXECUTING SCRIPT ... !");
                         proc->execute(_LinuxCommandBash " " _DefaultScriptFilePath);
                         proc->waitForFinished(86400000);//timeout: 86400000ms=1day
-                        GoSleep(777);//This line is added only based on practical experience. Don't remove!
+                        anqDebug("=> Try Completed !");
 #endif
                     }
                     else
