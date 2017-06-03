@@ -55,7 +55,6 @@ int main(int argc, char *argv[])
         QFile::remove(_DefaultConfigFilePath);
         do
         {
-            GoSleep(777);//This line is added only based on practical experience. Don't remove!
             if (++count0>7)
             {
                 break;
@@ -69,6 +68,7 @@ int main(int argc, char *argv[])
 #else
             proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
             proc->waitForFinished(60000);//timeout 1 minute
+            GoSleep(777);//This line is added only based on practical experience. Don't remove!
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=7)
@@ -183,6 +183,7 @@ int main(int argc, char *argv[])
 #else
                             proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
                             proc->waitForFinished(1800000);//timeout 30 minutes
+                            GoSleep(777);//This line is added only based on practical experience. Don't remove!
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=3)
@@ -251,6 +252,7 @@ int main(int argc, char *argv[])
                         anqDebug("=> EXECUTE SCRIPT ... !");
                         proc->execute(_LinuxCommandBash " " _DefaultScriptFilePath);
                         proc->waitForFinished(86400000);//timeout: 86400000ms=1day
+                        GoSleep(777);//This line is added only based on practical experience. Don't remove!
 #endif
                     }
                     else
