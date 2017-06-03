@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
                             qDebug() << _DefaultAutoUpdatePiSGFolderPath;
                             system("pause");
 #else
-                            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" ScriptLink "\"");
+                            proc->execute("wget -P " _DefaultAutoUpdatePiSGFolderPath "\"" + ScriptLink + "\"");
                             proc->waitForFinished(1800000);//timeout 30 minutes
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
             SleepTime = TimePoint -QTime::currentTime().msecsSinceStartOfDay();
         } while (SleepTime < 0);
         anDebug("Sleep Until" << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
-        anqDebug(_VarView(SleepTime) + " milisecond");
+        anqDebug(_VarView(SleepTime) " milisecond");
         GoSleep(SleepTime);
     }
     return a.exec();

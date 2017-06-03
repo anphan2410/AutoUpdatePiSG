@@ -140,7 +140,7 @@
 //input directly <VarName>
 //return type of QString formatted "<VarName>=<VarValue>"
 #define _VarView(VarName) #VarName "="                       \
-                            + QVariant(VarName).toString()
+                          + QVariant(VarName).toString() + ""
 /************************************************************/
 #include <QDebug>
 #include <QVariant>
