@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
         QFile::remove(_DefaultConfigFilePath);
         do
         {
+            GoSleep(777);//This line is added only based on practical experience. Don't remove!
             if (++count0>7)
             {
                 break;
