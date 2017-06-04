@@ -208,8 +208,8 @@ int main(int argc, char *argv[])
                                 anqDebug("=> Try Calculating Sha256 Of The New Script File ...");
                                 proc->setStandardOutputFile(_DefaultScriptSha256FilePath);
                                 proc->start("sha256sum " _DefaultScriptFilePath);
-                                proc->waitForFinished(600000);//timeout 10 minutes
-
+                                proc->waitForFinished(300000);//timeout 5 minutes
+                                proc->setStandardOutputFile(QProcess::nullDevice());
                                 anqDebug("=> Try Completed !");
 #endif
                             } while(!QFile::exists(_DefaultScriptSha256FilePath));
