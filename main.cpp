@@ -71,13 +71,13 @@ void anqMsgCaptureToFile(const QString &ADestinationFilePath)
     LastUpdateCycleStandardOutputCapture.close();
 }
 
-void anqMsgCaptureFromFile(const QString &ASourceFilePath)
+void qDebugAWholeFile(const QString &ASourceFilePath)
 {
     QFile readFile(ASourceFilePath);
     if (readFile.open(QFile::ReadOnly | QFile::Text))
     {
         QTextStream ReadTextOut(&readFile);
-        anqMsgCapture += ReadTextOut.readAll();
+        qDebug() << ReadTextOut.readAll();
     }
     readFile.close();
 }
@@ -136,7 +136,6 @@ int main(int argc, char *argv[])
             proc->waitForFinished(TimeOutInMilisecondForADownloadOfConfigFile);
             anDebugCode(
             proc->setStandardOutputFile(QProcess::nullDevice());
-            anqMsgCaptureFromFile(_DefaultLastQProcessStandardOutputFilePath);
             if (proc->state() == QProcess::Running)
             {
                 anqDebug("=> Try Timed Out !");
@@ -145,7 +144,7 @@ int main(int argc, char *argv[])
             {
                 anqDebug("=> Try Completed !");
                 anqDebug("---------------------------------------------------------------------");
-                proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                 anqDebug("---------------------------------------------------------------------");
             })
             proc->close();
@@ -336,7 +335,6 @@ int main(int argc, char *argv[])
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfScriptFile);
                             anDebugCode(
                             proc->setStandardOutputFile(QProcess::nullDevice());
-                            anqMsgCaptureFromFile(_DefaultLastQProcessStandardOutputFilePath);
                             if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Try Timed Out !");
@@ -345,7 +343,7 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Completed !");
                                 anqDebug("---------------------------------------------------------------------");
-                                proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                                qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                                 anqDebug("---------------------------------------------------------------------");
                             })
                             proc->close();
@@ -374,7 +372,7 @@ int main(int argc, char *argv[])
                                 proc->waitForFinished(TimeOutInMilisecondForADownloadOfScriptFile);
                                 proc->setStandardOutputFile(QProcess::nullDevice());
                                 anDebugCode(
-                                anqMsgCaptureFromFile(_DefaultScriptSha256FilePath);
+                                qDebugAWholeFile(_DefaultScriptSha256FilePath);
                                 if (proc->state() == QProcess::Running)
                                 {
                                     anqDebug("=> Try Timed Out !");
@@ -433,7 +431,6 @@ int main(int argc, char *argv[])
                         proc->waitForFinished(TimeOutInMilisecondForScriptFileExecution);
                         anDebugCode(
                         proc->setStandardOutputFile(QProcess::nullDevice());
-                        anqMsgCaptureFromFile(_DefaultLastQProcessStandardOutputFilePath);
                         if (proc->state() == QProcess::Running)
                         {
                             anqDebug("=> Try Timed Out For " << TimeOutInMilisecondForScriptFileExecution << " milisecond !";);
@@ -443,7 +440,7 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Completed !");
                             anqDebug("=> Script Execution Standard Output Captured !");
                             anqDebug("---------------------------------------------------------------------");
-                            proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");
                         })
                         proc->close();
@@ -525,7 +522,6 @@ int main(int argc, char *argv[])
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
                             proc->setStandardOutputFile(QProcess::nullDevice());
-                            anqMsgCaptureFromFile(_DefaultLastQProcessStandardOutputFilePath);
                             if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Try Timed Out !");
@@ -534,7 +530,7 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Completed !");
                                 anqDebug("---------------------------------------------------------------------");
-                                proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                                qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                                 anqDebug("---------------------------------------------------------------------");
                             })
                             proc->close();
@@ -563,7 +559,7 @@ int main(int argc, char *argv[])
                                 proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                                 proc->setStandardOutputFile(QProcess::nullDevice());
                                 anDebugCode(
-                                anqMsgCaptureFromFile(_DefaultProgSha256FilePath);
+                                qDebugAWholeFile(_DefaultProgSha256FilePath);
                                 if (proc->state() == QProcess::Running)
                                 {
                                     anqDebug("=> Try Timed Out !");
@@ -620,7 +616,7 @@ int main(int argc, char *argv[])
                             qDebug() << "The System Should Be Rebooted And Autostarted With Several Programs!";
                             system("pause");
 #else
-                            anqDebug("=> Try Rebooting ...");
+                            anqDebug("=> Try Setting Executable Attribute ...");
                             anDebugCode(
                             anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
@@ -628,6 +624,7 @@ int main(int argc, char *argv[])
                             proc->start("chmod +777 " _DefaultProgFilePath);
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
+                            proc->setStandardOutputFile(QProcess::nullDevice());
                             if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Failed To Set Executable Attribute Of The Program File !");
@@ -635,15 +632,15 @@ int main(int argc, char *argv[])
                             else
                                 anqDebug("=> Successfully Set Executable Attribute Of The Program File !");
                             anqDebug("---------------------------------------------------------------------");
-                            proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");)
                             proc->close();
+                            anqDebug("=> Try Rebooting ...");
                             //Reboot
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
                             proc->setStandardOutputFile(QProcess::nullDevice());
-                            anqMsgCaptureFromFile(_DefaultLastQProcessStandardOutputFilePath);
                             if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Try Timed Out !");
@@ -652,7 +649,7 @@ int main(int argc, char *argv[])
                             else
                                 anqDebug("=> This Line Should Be Never Printed Out !");
                             anqDebug("---------------------------------------------------------------------");
-                            proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");)
                             proc->close();
 #endif
