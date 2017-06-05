@@ -22,14 +22,18 @@
 #define _DefaultScriptSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256"
 #define _DefaultScriptFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.sh"
 #define _DefaultScriptExecutionStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/ScriptExecution.info"
-#define _DefaultPollingRate 1
+#define _DefaultProgSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ProgSha256"
+#define _DefaultTmpProgFolderPath _DefaultAutoUpdatePiSGFolderPath "/Flipper1"
+#define _DefaultTmpProgFilePath _DefaultTmpProgFolderPath "/FlipperDemo"
+#define _DefaultProgFilePath _TildeDirectory "/Flipper1/FlipperDemo"
+#define _DefaultPollingRate 2
 #define _DefaultCheckPoint QTime::fromString("14:30:00","hh:mm:ss")
-#define _DefaultTimesToTryDownloadingConfigFile 7
+#define _DefaultTimesToTryDownloadingConfigFile 11
 #define _DefaultTimeOutInSecondForADownloadOfConfigFile 47
-#define _DefaultTimesToTryDownloadingScriptFile 4
+#define _DefaultTimesToTryDownloadingScriptFile 7
 #define _DefaultTimeOutInSecondForADownloadOfScriptFile 60
 #define _DefaultTimeOutInSecondForScriptFileExecution 600
-#define _DefaultTimesToTryDownloadingProgFile 4
+#define _DefaultTimesToTryDownloadingProgFile 7
 #define _DefaultTimeOutInSecondForADownloadOfProgFile 240
 
 void GoSleep(int ms)
@@ -223,7 +227,7 @@ int main(int argc, char *argv[])
                 if (IsThereFileScriptSha256)
                 {
                     anqDebug("=> Found A .ScriptSha256 File !");
-                    QFile ScriptSha256File(_DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256");
+                    QFile ScriptSha256File(_DefaultScriptSha256FilePath);
                     if (ScriptSha256File.open(QIODevice::ReadOnly))
                     {
                        QTextStream readFile(&ScriptSha256File);
@@ -254,7 +258,7 @@ int main(int argc, char *argv[])
                     tmpCondition = true;
                     do
                     {
-                        if (++count2>3)
+                        if (++count2>4)
                         {
                             anqDebug("=> Not Matched Sha256 Of The New Script !");
                             break;
@@ -323,7 +327,7 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Successfully Calculate Sha256 Of The New Script !");
                                 count1 = 0;
-                                QFile ScriptSha256File(_DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256");
+                                QFile ScriptSha256File(_DefaultScriptSha256FilePath);
                                 if (ScriptSha256File.open(QIODevice::ReadOnly))
                                 {
                                    QTextStream readFile(&ScriptSha256File);
@@ -351,7 +355,7 @@ int main(int argc, char *argv[])
                             break;
                         }
                     } while (currentScriptSha256 != ScriptSha256);
-                    if (tmpCondition && (count2<=3))
+                    if (tmpCondition && (count2<=4))
                     {
                         anqDebug("=> Matched Sha256 Of The Downloaded Script !");
                         count2 = 0;
@@ -385,10 +389,186 @@ int main(int argc, char *argv[])
                     }
                 }
             }
+            anDebugCode(
             else
             {
                 anqDebug("=> Not Valid ScriptSha256 !");
+            })
+            if (ProgSha256.size() == 64)
+            {
+                anqDebug("=> Valid ProgSha256 !");
+                bool tmpCondition = false;
+                bool IsThereFileProgSha256 = QFile::exists(_DefaultProgSha256FilePath);
+                QString currentProgSha256 = "";
+                if (IsThereFileProgSha256)
+                {
+                    anqDebug("=> Found A .ProgSha256 File !");
+                    QFile ProgSha256File(_DefaultProgSha256FilePath);
+                    if (ProgSha256File.open(QIODevice::ReadOnly))
+                    {
+                        QTextStream readFile(&ProgSha256File);
+                        while (!readFile.atEnd())
+                        {
+                            anqDebug("=> Fetched .ProgSha256 File ...");
+                            currentProgSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                            anqDebug("   " _VarView(currentProgSha256));
+                            anqDebug("   parsed " _VarView(ProgSha256));
+                        }
+                        ProgSha256File.close();
+                    }
+                    tmpCondition = (currentProgSha256 != ProgSha256);
+                    anDebugWrap(tmpCondition,
+                                anqDebug("=> Not Matched ProgSha256 between the old program and the new one !");
+                            );
+                    anDebugWrap(!tmpCondition,
+                                anqDebug("=> Matched ProgSha256 --> No New Program");
+                            );
+                }
+                anDebugWrap(!IsThereFileProgSha256,
+                            anqDebug("=> Not Found Any .ProgSha256 File !");
+                        );
+                if (tmpCondition || !IsThereFileProgSha256)
+                {
+                    quint8 count1 = 0;
+                    quint8 count2 = 0;
+                    tmpCondition = true;
+                    do
+                    {
+                        if (++count2>4)
+                        {
+                            anqDebug("=> Not Matched Sha256 Of The New Program !");
+                            break;
+                        }
+                        QFile::remove(_DefaultTmpProgFilePath);
+                        anqDebug("=> Start Downloading A New Program File !");
+                        anqDebug("   " _VarView(TimesToTryDownloadingProgFile));
+                        anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfProgFile));
+                        do
+                        {
+                            if (++count1>TimesToTryDownloadingProgFile)
+                            {
+                                break;
+                            }
+#ifdef Q_OS_WIN
+                            qDebug() << "This Program Is Only For Testing Purpose On Windows";
+                            qDebug() << "Please MANUALLY Download Program FlipperDemo";
+                            qDebug() << "Then Place The File Into The Following Path:";
+                            qDebug() << _DefaultTmpProgFolderPath;
+                            system("pause");
+#else
+                            anqDebug("=> Try Downloading A Program File ...");
+                            proc->start("wget -P " _DefaultTmpProgFolderPath " \"" + ProgLink + "\"");
+                            proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
+                            anDebugCode(if (proc->state() == QProcess::Running)
+                            {
+                                anqDebug("=> Try Timed Out !");
+                            }
+                            else
+                                anqDebug("=> Try Completed !");)
+                            proc->close();
+#endif
+                        } while (!QFile::exists(_DefaultTmpProgFilePath));
+                        if (count1<=TimesToTryDownloadingProgFile)
+                        {
+                            anqDebug("=> Successfully Download The Program File !");
+                            count1 = 0;
+                            do
+                            {
+                                if (++count1>4)
+                                {
+                                    break;
+                                }
+#ifdef Q_OS_WIN
+                                qDebug() << "This Program Is Only For Testing Purpose On Windows";
+                                qDebug() << "Please MANUALLY Write Sha256Sum Of FlipperDemo Into .ProgSha256";
+                                qDebug() << "Then Place File .ProgSha256 Into The Following Path:";
+                                qDebug() << _DefaultTmpProgFolderPath;
+                                system("pause");
+#else
+                                anqDebug("=> Try Calculating Sha256 Of The New Prog File ...");
+                                proc->setStandardOutputFile(_DefaultProgSha256FilePath);
+                                proc->start("sha256sum " _DefaultTmpProgFilePath);
+                                proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
+                                proc->setStandardOutputFile(QProcess::nullDevice());
+                                anDebugCode(
+                                if (proc->state() == QProcess::Running)
+                                {
+                                    anqDebug("=> Try Timed Out !");
+                                }
+                                else
+                                    anqDebug("=> Try Completed !");)
+                                proc->close();
+#endif
+                            } while(!QFile::exists(_DefaultProgSha256FilePath));
+                            if (count1<=4)
+                            {
+                                anqDebug("=> Successfully Calculate Sha256 Of The New Program !");
+                                count1 = 0;
+                                QFile ProgSha256File(_DefaultProgSha256FilePath);
+                                if (ProgSha256File.open(QIODevice::ReadOnly))
+                                {
+                                    QTextStream readFile(&ProgSha256File);
+                                    while (!readFile.atEnd())
+                                    {
+                                        anqDebug("=> Fetched The .ProgSha256 File ...");
+                                        currentProgSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                                        anqDebug("   " _VarView(currentProgSha256));
+                                        anqDebug("   parsed " _VarView(ProgSha256));
+                                    }
+                                    ProgSha256File.close();
+                                }
+                            }
+                            else
+                            {
+                                anqDebug("=> Failed To Calculate Sha256 Of The New Program !");
+                                tmpCondition = false;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            anqDebug("=> Failed To Download The New Program !");
+                            tmpCondition = false;
+                            break;
+                        }
+                    } while (currentProgSha256 != ProgSha256);
+                    if (tmpCondition && (count2<=4))
+                    {
+                        anqDebug("=> Matched Sha256 Of The Downloaded Program !");
+                        count2 = 0;
+                        QFile::remove(_DefaultProgFilePath);
+                        if (QFile::copy(_DefaultTmpProgFilePath,_DefaultProgFilePath))
+                        {
+                            anqDebug("=> Successfully Update The Program !");
+                            anqDebug("=> Start Rebooting The System !");
+#ifdef Q_OS_WIN
+                            qDebug() << "This Program Is Only For Testing Purpose On Windows";
+                            qDebug() << "This Step Can Not Be Imitated !";
+                            qDebug() << "The System Should Be Rebooted And Autostarted With Several Programs!";
+                            system("pause");
+#else
+                            anqDebug("=> Try Rebooting ...");
+                            proc->start("reboot");
+                            proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
+                            anDebugCode(
+                            if (proc->state() == QProcess::Running)
+                            {
+                                anqDebug("=> Try Timed Out !");
+                                anqDebug("=> Error Occurred ! The System Is Not Rebooted !");
+                            }
+                            else
+                                anqDebug("=> This Line Should Be Never Printed Out !");)
+                            proc->close();
+#endif
+                        }
+                    }
+                }
             }
+            anDebugCode(
+            else
+            {
+                anqDebug("=> Not Valid ProgSha256 !");
+            })
         }
         //<Stop Timing Here If Needed>
         anqDebug("=> TAKE A BREAK !");
