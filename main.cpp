@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 #ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
+    proc->setProcessChannelMode(QProcess::MergedChannels);
 #endif
     quint8 PollingRate = 16;//_DefaultPollingRate;
     QTime CheckPoint = QTime::fromString("16:36:00","hh:mm:ss");//_DefaultCheckPoint;
