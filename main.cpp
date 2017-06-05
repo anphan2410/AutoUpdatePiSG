@@ -21,7 +21,7 @@
 #define _DefaultConfigFileLink "http://tamduongs.com:82/iot/AutoUpdatePiSG.conf"
 #define _DefaultScriptSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256"
 #define _DefaultScriptFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.sh"
-#define _DefaultScriptExecutionStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/ScriptExecution.info"
+#define _DefaultLastQProcessStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/LastQProcessStandardOutputCapture.info"
 #define _DefaultProgSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ProgSha256"
 #define _DefaultTmpProgFolderPath _DefaultAutoUpdatePiSGFolderPath "/Flipper1"
 #define _DefaultTmpProgFilePath _DefaultTmpProgFolderPath "/FlipperDemo"
@@ -91,9 +91,13 @@ int main(int argc, char *argv[])
             system("pause");
 #else
             anqDebug("=> Try Downloading The Config File ...");
+            anDebugCode(
+            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
             proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
             proc->waitForFinished(TimeOutInMilisecondForADownloadOfConfigFile);
-            anDebugCode(if (proc->state() == QProcess::Running)
+            anDebugCode(
+            proc->setStandardOutputFile(QProcess::nullDevice());
+            if (proc->state() == QProcess::Running)
             {
                 anqDebug("=> Try Timed Out !");
             }
@@ -281,9 +285,13 @@ int main(int argc, char *argv[])
                             system("pause");
 #else
                             anqDebug("=> Try Downloading A Script File ...");
+                            anDebugCode(
+                            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfScriptFile);
-                            anDebugCode(if (proc->state() == QProcess::Running)
+                            anDebugCode(
+                            proc->setStandardOutputFile(QProcess::nullDevice());
+                            if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Try Timed Out !");
                             }
@@ -367,7 +375,7 @@ int main(int argc, char *argv[])
 #else
                         anqDebug("=> TRY EXECUTING SCRIPT ... !");
                         anDebugCode(
-                        proc->setStandardOutputFile(_DefaultScriptExecutionStandardOutputFilePath);)
+                        proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                         proc->start(_LinuxCommandBash " " _DefaultScriptFilePath);
                         proc->waitForFinished(TimeOutInMilisecondForScriptFileExecution);
                         anDebugCode(
@@ -381,7 +389,7 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Completed !");
                             anqDebug("=> Script Execution Standard Output Captured !");
                             anqDebug("---------------------------------------------------------------------");
-                            proc->execute("cat " _DefaultScriptExecutionStandardOutputFilePath);
+                            proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");
                         })
                         proc->close();
@@ -457,9 +465,13 @@ int main(int argc, char *argv[])
                             system("pause");
 #else
                             anqDebug("=> Try Downloading A Program File ...");
+                            anDebugCode(
+                            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("wget -P " _DefaultTmpProgFolderPath " \"" + ProgLink + "\"");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
-                            anDebugCode(if (proc->state() == QProcess::Running)
+                            anDebugCode(
+                            proc->setStandardOutputFile(QProcess::nullDevice());
+                            if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Try Timed Out !");
                             }
@@ -548,9 +560,12 @@ int main(int argc, char *argv[])
                             system("pause");
 #else
                             anqDebug("=> Try Rebooting ...");
+                            anDebugCode(
+                            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
+                            proc->setStandardOutputFile(QProcess::nullDevice());
                             if (proc->state() == QProcess::Running)
                             {
                                 anqDebug("=> Try Timed Out !");
