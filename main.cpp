@@ -21,6 +21,7 @@
 #define _DefaultConfigFileLink "http://tamduongs.com:82/iot/AutoUpdatePiSG.conf"
 #define _DefaultScriptSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256"
 #define _DefaultScriptFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.sh"
+#define _DefaultScriptExecutionStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/ScriptExecution.info"
 #define _DefaultPollingRate 1
 #define _DefaultCheckPoint QTime::fromString("14:30:00","hh:mm:ss")
 #define _DefaultTimesToTryDownloadingConfigFile 7
@@ -330,7 +331,7 @@ int main(int argc, char *argv[])
                                        anqDebug("=> Fetched The .ScriptSha256 File ...");
                                        currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
                                        anqDebug("   " _VarView(currentScriptSha256));
-                                       anqDebug("new" _VarView(ScriptSha256));
+                                       anqDebug("   parsed " _VarView(ScriptSha256));
                                    }
                                    ScriptSha256File.close();
                                 }
@@ -360,14 +361,24 @@ int main(int argc, char *argv[])
                         system("pause");
 #else
                         anqDebug("=> TRY EXECUTING SCRIPT ... !");
+                        anDebugCode(
+                        proc->setStandardOutputFile(_DefaultScriptExecutionStandardOutputFilePath);)
                         proc->start(_LinuxCommandBash " " _DefaultScriptFilePath);
                         proc->waitForFinished(TimeOutInMilisecondForScriptFileExecution);
-                        anDebugCode(if (proc->state() == QProcess::Running)
+                        anDebugCode(
+                        proc->setStandardOutputFile(QProcess::nullDevice());
+                        if (proc->state() == QProcess::Running)
                         {
                             anqDebug("=> Try Timed Out For " << TimeOutInMilisecondForScriptFileExecution << " milisecond !";);
                         }
                         else
-                            anqDebug("=> Try Completed !");)
+                        {
+                            anqDebug("=> Try Completed !");
+                            anqDebug("=> Script Execution Standard Output Captured !");
+                            anqDebug("---------------------------------------------------------------------");
+                            proc->execute("cat " _DefaultScriptExecutionStandardOutputFilePath);
+                            anqDebug("---------------------------------------------------------------------");
+                        })
                         proc->close();
 #endif
                     }
