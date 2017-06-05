@@ -102,7 +102,12 @@ int main(int argc, char *argv[])
                 anqDebug("=> Try Timed Out !");
             }
             else
+            {
                 anqDebug("=> Try Completed !");)
+                anqDebug("---------------------------------------------------------------------");
+                proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                anqDebug("---------------------------------------------------------------------");
+            }
             proc->close();
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
@@ -296,7 +301,12 @@ int main(int argc, char *argv[])
                                 anqDebug("=> Try Timed Out !");
                             }
                             else
+                            {
                                 anqDebug("=> Try Completed !");)
+                                anqDebug("---------------------------------------------------------------------");
+                                proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                                anqDebug("---------------------------------------------------------------------");
+                            }
                             proc->close();
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
@@ -476,7 +486,12 @@ int main(int argc, char *argv[])
                                 anqDebug("=> Try Timed Out !");
                             }
                             else
+                            {
                                 anqDebug("=> Try Completed !");)
+                                anqDebug("---------------------------------------------------------------------");
+                                proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                                anqDebug("---------------------------------------------------------------------");
+                            }
                             proc->close();
 #endif
                         } while (!QFile::exists(_DefaultTmpProgFilePath));
@@ -572,7 +587,10 @@ int main(int argc, char *argv[])
                                 anqDebug("=> Error Occurred ! The System Is Not Rebooted !");
                             }
                             else
-                                anqDebug("=> This Line Should Be Never Printed Out !");)
+                                anqDebug("=> This Line Should Be Never Printed Out !");
+                            anqDebug("---------------------------------------------------------------------");
+                            proc->execute("cat " _DefaultLastQProcessStandardOutputFilePath);
+                            anqDebug("---------------------------------------------------------------------");)
                             proc->close();
 #endif
                         }
