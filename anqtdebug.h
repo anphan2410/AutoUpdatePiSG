@@ -1,5 +1,5 @@
 /*********************USAGE**********************************/
-/* I) Prerequisite Information                              */
+/*I)  Prerequisite Information                              */
 /*    Add #include "andebug.h" to where this file is used   */
 /*    There are three Flags which feature PARALLELY         */
 /* 1) To Enable Debug, Set _IsDebugEnabled To Non-Zero      */
@@ -36,7 +36,12 @@
 /*      printing out exactly what you input without any mod-*/
 /*      -ification by any flag, except for _IsDebugEnabled  */
 /*    Usage: anqDebug(<Input>) equals to qDebug()<< <Input>;*/
-/*IV) In the end, MISCELLANY section is in aid of this usage*/
+/*IV) STRAY MACRO: anDebugCode() is here for a purpose of   */
+/*      inserting code only when Flag _IsDebugEnabled is set*/
+/*    Usage: anDebugCode(<Your Code Here>)                  */
+/*    Warning: be careful to put ';' at any place because   */
+/*      this does nothing but only conditioning your code   */
+/*V) In the end, MISCELLANY section is in aid of this usage */
 /*********************EXAMPLES*******************************/
 /*    Notation <10x> means _IsDebugEnabled Is Non-Zero      */
 /*                         _IsAsserted Is Zero              */
@@ -88,6 +93,7 @@
 #define _IsLocated 1
 /*********************Function Definition********************/
 #if _IsDebugEnabled
+    #define anDebugCode(...) __VA_ARGS__
     #define anqDebug(...) qDebug() << __VA_ARGS__;
     #define anDebugWrap( LogicalExpression, ...)             \
         if (LogicalExpression) { __VA_ARGS__;}
@@ -100,6 +106,7 @@
 #else
     #undef _IsAsserted
     #undef _IsLocated
+    #define anDebugCode(...)
     #define anqDebug(...)
     #define anDebugWrap( LogicalExpression, ...)
     #define anDebug(...)

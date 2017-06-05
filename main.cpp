@@ -69,7 +69,13 @@ int main(int argc, char *argv[])
             anqDebug("=> Try Downloading Config File ...");
             proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
             proc->waitForFinished(60000);//timeout 1 minute
-            anqDebug("=> Try Completed !");
+            if (proc->state() == QProcess::Running)
+            {
+                proc->kill();
+                anqDebug("=> Try Timed Out !");
+            }
+            else
+                anqDebug("=> Try Completed !");
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=7)
@@ -185,7 +191,13 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Downloading Script File ...");
                             proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
                             proc->waitForFinished(1800000);//timeout 30 minutes
-                            anqDebug("=> Try Completed !");
+                            if (proc->state() == QProcess::Running)
+                            {
+                                proc->kill();
+                                anqDebug("=> Try Timed Out !");
+                            }
+                            else
+                                anqDebug("=> Try Completed !");
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=3)
@@ -210,7 +222,13 @@ int main(int argc, char *argv[])
                                 proc->start("sha256sum " _DefaultScriptFilePath);
                                 proc->waitForFinished(300000);//timeout 5 minutes
                                 proc->setStandardOutputFile(QProcess::nullDevice());
-                                anqDebug("=> Try Completed !");
+                                if (proc->state() == QProcess::Running)
+                                {
+                                    proc->kill();
+                                    anqDebug("=> Try Timed Out !");
+                                }
+                                else
+                                    anqDebug("=> Try Completed !");
 #endif
                             } while(!QFile::exists(_DefaultScriptSha256FilePath));
                             if (count1<=3)
@@ -258,7 +276,13 @@ int main(int argc, char *argv[])
                         anqDebug("=> TRY EXECUTING SCRIPT ... !");
                         proc->execute(_LinuxCommandBash " " _DefaultScriptFilePath);
                         proc->waitForFinished(86400000);//timeout: 86400000ms=1day
-                        anqDebug("=> Try Completed !");
+                        if (proc->state() == QProcess::Running)
+                        {
+                            proc->kill();
+                            anqDebug("=> Try Timed Out !");
+                        }
+                        else
+                            anqDebug("=> Try Completed !");
 #endif
                     }
                     else
