@@ -79,7 +79,7 @@ void anqMsgCaptureFromFile(const QString &ASourceFilePath)
         QTextStream ReadTextOut(&readFile);
         anqMsgCapture += ReadTextOut.readAll();
     }
-    ReadFile.close();
+    readFile.close();
 }
 )
 
