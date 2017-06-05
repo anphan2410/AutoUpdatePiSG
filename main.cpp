@@ -71,11 +71,11 @@ int main(int argc, char *argv[])
             proc->waitForFinished(60000);//timeout 1 minute
             if (proc->state() == QProcess::Running)
             {
-                proc->kill();
                 anqDebug("=> Try Timed Out !");
             }
             else
                 anqDebug("=> Try Completed !");
+            proc->close();
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=7)
@@ -193,11 +193,11 @@ int main(int argc, char *argv[])
                             proc->waitForFinished(1800000);//timeout 30 minutes
                             if (proc->state() == QProcess::Running)
                             {
-                                proc->kill();
                                 anqDebug("=> Try Timed Out !");
                             }
                             else
                                 anqDebug("=> Try Completed !");
+                            proc->close();
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=3)
@@ -224,11 +224,11 @@ int main(int argc, char *argv[])
                                 proc->setStandardOutputFile(QProcess::nullDevice());
                                 if (proc->state() == QProcess::Running)
                                 {
-                                    proc->kill();
                                     anqDebug("=> Try Timed Out !");
                                 }
                                 else
                                     anqDebug("=> Try Completed !");
+                                proc->close();
 #endif
                             } while(!QFile::exists(_DefaultScriptSha256FilePath));
                             if (count1<=3)
@@ -278,11 +278,11 @@ int main(int argc, char *argv[])
                         proc->waitForFinished(86400000);//timeout: 86400000ms=1day
                         if (proc->state() == QProcess::Running)
                         {
-                            proc->kill();
                             anqDebug("=> Try Timed Out !");
                         }
                         else
                             anqDebug("=> Try Completed !");
+                        proc->close();
 #endif
                     }
                     else
