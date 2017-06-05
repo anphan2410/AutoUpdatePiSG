@@ -647,12 +647,13 @@ int main(int argc, char *argv[])
                                 anqDebug("=> Error Occurred ! The System Is Not Rebooted !");
                             }
                             else
-                                anqDebug("=> This Line Should Be Never Printed Out !");
+                                anqDebug("=> The System Is About To Reboot !");
                             anqDebug("---------------------------------------------------------------------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");)
                             proc->close();
 #endif
+                            a.quit();
                         }
                     }
                 }
