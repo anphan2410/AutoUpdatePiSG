@@ -5,6 +5,8 @@
 #include <QTextStream>
 #include <QDir>
 #include "anqtdebug.h"
+#include <iostream>
+#include <QtMessageHandler>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -35,6 +37,7 @@
 #define _DefaultTimeOutInSecondForScriptFileExecution 600
 #define _DefaultTimesToTryDownloadingProgFile 7
 #define _DefaultTimeOutInSecondForADownloadOfProgFile 240
+#define _DefaultLastUpdateCycleStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/LastUpdateCycleStandardOutputCapture.info"
 
 void GoSleep(int ms)
 {
@@ -46,8 +49,17 @@ void GoSleep(int ms)
 #endif
 }
 
+QString anqMsgCapture;
+
+void anqMsgHandler(QtMsgType, const QMessageLogContext &, const QString & msg)
+{
+    anqMsgCapture += msg + "\n";
+    std::cout << msg.toStdString() << std::endl;
+}
+
 int main(int argc, char *argv[])
 {
+    qInstallMessageHandler(anqMsgHandler);
     QCoreApplication a(argc, argv);
 #ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
@@ -68,7 +80,8 @@ int main(int argc, char *argv[])
     QString ProgLink = "";
     quint8 count0 = 0;
     while (true)
-    {        
+    {
+        anqMsgCapture.clear();
         anqDebug("=======================================================================");
         anqDebug("=====================START A NEW UPDATE CYCLE =========================");
         //<Start Timing Here If Needed>
@@ -616,6 +629,13 @@ int main(int argc, char *argv[])
         anqDebug("   " _VarView(SleepTime) " milisecond");
         anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
         GoSleep(SleepTime);
+        //Capture All Output Messages Into A File
+        QFile LastUpdateCycleStandardOutputCapture(_DefaultLastUpdateCycleStandardOutputFilePath);
+        if (LastUpdateCycleStandardOutputCapture.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            QTextStream OutputMessagesIntoFile(&LastUpdateCycleStandardOutputCapture);
+            OutputMessagesIntoFile << anqMsgCapture << endl;
+        }
+        LastUpdateCycleStandardOutputCapture.close();
     }
     return a.exec();
 }
