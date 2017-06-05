@@ -675,8 +675,8 @@ int main(int argc, char *argv[])
         } while (SleepTime < 0);
         anqDebug("   " _VarView(SleepTime) " milisecond");
         anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
-        GoSleep(SleepTime);
         anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);)
+        GoSleep(SleepTime);
     }
     return a.exec();
 }
