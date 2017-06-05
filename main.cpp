@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
                             anqDebug("=> Fetched .ScriptSha256 File ...");
                             currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
                             anqDebug("   " _VarView(currentScriptSha256));
-                            anqDebug("new" _VarView(ScriptSha256));
+                            anqDebug("   parsed " _VarView(ScriptSha256));
                        }
                        ScriptSha256File.close();
                     }
@@ -238,7 +238,7 @@ int main(int argc, char *argv[])
                     anDebugWrap(tmpCondition,
                                 anqDebug("=> Not Matched ScriptSha256 between the old script and the new one !");
                                 );
-                    anDebugWrap(tmpCondition,
+                    anDebugWrap(!tmpCondition,
                                 anqDebug("=> Matched ScriptSha256 --> No New Script");
                                 );
                 }
