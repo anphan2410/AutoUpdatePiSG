@@ -604,7 +604,7 @@ int main(int argc, char *argv[])
             })
         }
         //<Stop Timing Here If Needed>
-        anqDebug("=> TAKE A BREAK !");
+        anqDebug("=> Calculate Time To Next Check Point ...");
         int BreakInterval = 86400000/PollingRate;
         int TimePoint = CheckPoint.msecsSinceStartOfDay() - BreakInterval;
         int SleepTime = 0;
@@ -613,8 +613,8 @@ int main(int argc, char *argv[])
             TimePoint += BreakInterval;
             SleepTime = TimePoint -QTime::currentTime().msecsSinceStartOfDay();
         } while (SleepTime < 0);
-        anDebug("Sleep Until" << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
         anqDebug("   " _VarView(SleepTime) " milisecond");
+        anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
         GoSleep(SleepTime);
     }
     return a.exec();
