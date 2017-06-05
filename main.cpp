@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
     quint8 count0 = 0;
     while (true)
     {        
-        anqDebug("===================================================================================================");
-        anqDebug("=====================START A NEW UPDATE CYCLE =====================================================");
+        anqDebug("=======================================================================");
+        anqDebug("=====================START A NEW UPDATE CYCLE =========================");
         //<Start Timing Here If Needed>
         QFile::remove(_DefaultConfigFilePath);
         anqDebug("=> Start Downloading A Config File !");
@@ -375,7 +375,7 @@ int main(int argc, char *argv[])
             }
             else
             {
-
+                anqDebug("=> Not Valid ScriptSha256 !");
             }
         }
         //<Stop Timing Here If Needed>
