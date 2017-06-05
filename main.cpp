@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
                 anqDebug("=> Valid ScriptSha256 !");
                 bool tmpCondition = false;
                 bool IsThereFileScriptSha256 = QFile::exists(_DefaultScriptSha256FilePath);
-                QString currentScriptSha256 = "";
+                QString fetchedScriptSha256 = "";
                 if (IsThereFileScriptSha256)
                 {
                     anqDebug("=> Found A .ScriptSha256 File !");
@@ -282,13 +282,13 @@ int main(int argc, char *argv[])
                        while (!readFile.atEnd())
                        {
                             anqDebug("=> Fetched .ScriptSha256 File ...");
-                            currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
-                            anqDebug("   " _VarView(currentScriptSha256));
+                            fetchedScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                            anqDebug("   " _VarView(fetchedScriptSha256));
                             anqDebug("   parsed " _VarView(ScriptSha256));
                        }
                        ScriptSha256File.close();
                     }
-                    tmpCondition = (currentScriptSha256 != ScriptSha256);
+                    tmpCondition = (fetchedScriptSha256 != ScriptSha256);
                     anDebugWrap(tmpCondition,
                                 anqDebug("=> Not Matched ScriptSha256 between the old script and the new one !");
                                 );
@@ -393,8 +393,8 @@ int main(int argc, char *argv[])
                                    while (!readFile.atEnd())
                                    {
                                        anqDebug("=> Fetched The .ScriptSha256 File ...");
-                                       currentScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
-                                       anqDebug("   " _VarView(currentScriptSha256));
+                                       fetchedScriptSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                                       anqDebug("   " _VarView(fetchedScriptSha256));
                                        anqDebug("   parsed " _VarView(ScriptSha256));
                                    }
                                    ScriptSha256File.close();
@@ -413,7 +413,7 @@ int main(int argc, char *argv[])
                             tmpCondition = false;
                             break;
                         }
-                    } while (currentScriptSha256 != ScriptSha256);
+                    } while (fetchedScriptSha256 != ScriptSha256);
                     if (tmpCondition && (count2<=4))
                     {
                         anqDebug("=> Matched Sha256 Of The Downloaded Script !");
@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
                 anqDebug("=> Valid ProgSha256 !");
                 bool tmpCondition = false;
                 bool IsThereFileProgSha256 = QFile::exists(_DefaultProgSha256FilePath);
-                QString currentProgSha256 = "";
+                QString fetchedProgSha256 = "";
                 if (IsThereFileProgSha256)
                 {
                     anqDebug("=> Found A .ProgSha256 File !");
@@ -469,13 +469,13 @@ int main(int argc, char *argv[])
                         while (!readFile.atEnd())
                         {
                             anqDebug("=> Fetched .ProgSha256 File ...");
-                            currentProgSha256 = readFile.readLine().trimmed().split(' ').at(0);
-                            anqDebug("   " _VarView(currentProgSha256));
+                            fetchedProgSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                            anqDebug("   " _VarView(fetchedProgSha256));
                             anqDebug("   parsed " _VarView(ProgSha256));
                         }
                         ProgSha256File.close();
                     }
-                    tmpCondition = (currentProgSha256 != ProgSha256);
+                    tmpCondition = (fetchedProgSha256 != ProgSha256);
                     anDebugWrap(tmpCondition,
                                 anqDebug("=> Not Matched ProgSha256 between the old program and the new one !");
                             );
@@ -580,8 +580,8 @@ int main(int argc, char *argv[])
                                     while (!readFile.atEnd())
                                     {
                                         anqDebug("=> Fetched The .ProgSha256 File ...");
-                                        currentProgSha256 = readFile.readLine().trimmed().split(' ').at(0);
-                                        anqDebug("   " _VarView(currentProgSha256));
+                                        fetchedProgSha256 = readFile.readLine().trimmed().split(' ').at(0);
+                                        anqDebug("   " _VarView(fetchedProgSha256));
                                         anqDebug("   parsed " _VarView(ProgSha256));
                                     }
                                     ProgSha256File.close();
@@ -600,7 +600,7 @@ int main(int argc, char *argv[])
                             tmpCondition = false;
                             break;
                         }
-                    } while (currentProgSha256 != ProgSha256);
+                    } while (fetchedProgSha256 != ProgSha256);
                     if (tmpCondition && (count2<=4))
                     {
                         anqDebug("=> Matched Sha256 Of The Downloaded Program !");
