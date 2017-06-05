@@ -10,7 +10,6 @@
 
 #ifdef Q_OS_WIN
 #include <windows.h>
-#include <iostream>
 #define _TildeDirectory "D:/home/pi"
 #else
 #include <time.h>
@@ -37,7 +36,10 @@
 #define _DefaultTimeOutInSecondForScriptFileExecution 600
 #define _DefaultTimesToTryDownloadingProgFile 7
 #define _DefaultTimeOutInSecondForADownloadOfProgFile 240
+
+anDebugCode(
 #define _DefaultLastUpdateCycleStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/LastUpdateCycleStandardOutputCapture.info"
+)
 
 void GoSleep(int ms)
 {
@@ -49,6 +51,8 @@ void GoSleep(int ms)
 #endif
 }
 
+anDebugCode(
+
 QString anqMsgCapture;
 
 void anqMsgHandler(QtMsgType, const QMessageLogContext &, const QString & msg)
@@ -57,9 +61,20 @@ void anqMsgHandler(QtMsgType, const QMessageLogContext &, const QString & msg)
     std::cout << msg.toStdString() << std::endl;
 }
 
+void anqMsgCaptureToFile(const QString &AFilePath)
+{
+    QFile LastUpdateCycleStandardOutputCapture(AFilePath);
+    if (LastUpdateCycleStandardOutputCapture.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        QTextStream OutputMessagesIntoFile(&LastUpdateCycleStandardOutputCapture);
+        OutputMessagesIntoFile << anqMsgCapture << endl;
+    }
+    LastUpdateCycleStandardOutputCapture.close();
+}
+)
+
 int main(int argc, char *argv[])
 {
-    qInstallMessageHandler(anqMsgHandler);
+    anDebugCode(qInstallMessageHandler(anqMsgHandler);)
     QCoreApplication a(argc, argv);
 #ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
@@ -81,7 +96,7 @@ int main(int argc, char *argv[])
     quint8 count0 = 0;
     while (true)
     {
-        anqMsgCapture.clear();
+        anDebugCode(anqMsgCapture.clear();)
         anqDebug("=======================================================================");
         anqDebug("=====================START A NEW UPDATE CYCLE =========================");
         //<Start Timing Here If Needed>
@@ -589,6 +604,7 @@ int main(int argc, char *argv[])
 #else
                             anqDebug("=> Try Rebooting ...");
                             anDebugCode(
+                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
@@ -629,13 +645,7 @@ int main(int argc, char *argv[])
         anqDebug("   " _VarView(SleepTime) " milisecond");
         anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
         GoSleep(SleepTime);
-        //Capture All Output Messages Into A File
-        QFile LastUpdateCycleStandardOutputCapture(_DefaultLastUpdateCycleStandardOutputFilePath);
-        if (LastUpdateCycleStandardOutputCapture.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            QTextStream OutputMessagesIntoFile(&LastUpdateCycleStandardOutputCapture);
-            OutputMessagesIntoFile << anqMsgCapture << endl;
-        }
-        LastUpdateCycleStandardOutputCapture.close();
+        anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);)
     }
     return a.exec();
 }
