@@ -3,7 +3,6 @@
 #include <QProcess>
 #include <QFile>
 #include <QTextStream>
-#include <QDir>
 #include "anqtdebug.h"
 #include <iostream>
 #include <QtMessageHandler>
