@@ -143,10 +143,11 @@ int main(int argc, char *argv[])
             else
             {
                 anqDebug("=> Try Completed !");
-                anqDebug("---------------------------------------------------------------------");
-                qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                anqDebug("---------------------------------------------------------------------");
-            })
+            }
+            anqDebug("---------------------------------------------------------------------");
+            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
+            anqDebug("---------------------------------------------------------------------");
+            )
             proc->close();
 #endif
         } while (!QFile::exists(_DefaultConfigFilePath));
@@ -342,10 +343,11 @@ int main(int argc, char *argv[])
                             else
                             {
                                 anqDebug("=> Try Completed !");
-                                anqDebug("---------------------------------------------------------------------");
-                                qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                                anqDebug("---------------------------------------------------------------------");
-                            })
+                            }
+                            anqDebug("---------------------------------------------------------------------");
+                            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
+                            anqDebug("---------------------------------------------------------------------");
+                            )
                             proc->close();
 #endif
                         } while (!QFile::exists(_DefaultScriptFilePath));
@@ -372,13 +374,16 @@ int main(int argc, char *argv[])
                                 proc->waitForFinished(TimeOutInMilisecondForADownloadOfScriptFile);
                                 proc->setStandardOutputFile(QProcess::nullDevice());
                                 anDebugCode(
-                                qDebugAWholeFile(_DefaultScriptSha256FilePath);
                                 if (proc->state() == QProcess::Running)
                                 {
                                     anqDebug("=> Try Timed Out !");
                                 }
                                 else
-                                    anqDebug("=> Try Completed !");)
+                                    anqDebug("=> Try Completed !");
+                                anqDebug("---------------------------------------------------------------------");
+                                qDebugAWholeFile(_DefaultScriptSha256FilePath);
+                                anqDebug("---------------------------------------------------------------------");
+                                )
                                 proc->close();
 #endif
                             } while(!QFile::exists(_DefaultScriptSha256FilePath));
@@ -438,11 +443,12 @@ int main(int argc, char *argv[])
                         else
                         {
                             anqDebug("=> Try Completed !");
-                            anqDebug("=> Script Execution Standard Output Captured !");
-                            anqDebug("---------------------------------------------------------------------");
-                            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                            anqDebug("---------------------------------------------------------------------");
-                        })
+                        }
+                        anqDebug("=> Script Execution Standard Output Captured !");
+                        anqDebug("---------------------------------------------------------------------");
+                        qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
+                        anqDebug("---------------------------------------------------------------------");
+                        )
                         proc->close();
 #endif
                     }
@@ -496,6 +502,7 @@ int main(int argc, char *argv[])
                         if (++count2>4)
                         {
                             anqDebug("=> Not Matched Sha256 Of The New Program !");
+                            anqDebug("=> FAILED TO UPDATE The New Program !");
                             break;
                         }
                         QFile::remove(_DefaultTmpProgFilePath);
@@ -529,10 +536,11 @@ int main(int argc, char *argv[])
                             else
                             {
                                 anqDebug("=> Try Completed !");
-                                anqDebug("---------------------------------------------------------------------");
-                                qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                                anqDebug("---------------------------------------------------------------------");
-                            })
+                            }
+                            anqDebug("---------------------------------------------------------------------");
+                            qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
+                            anqDebug("---------------------------------------------------------------------");
+                            )
                             proc->close();
 #endif
                         } while (!QFile::exists(_DefaultTmpProgFilePath));
@@ -559,13 +567,16 @@ int main(int argc, char *argv[])
                                 proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                                 proc->setStandardOutputFile(QProcess::nullDevice());
                                 anDebugCode(
-                                qDebugAWholeFile(_DefaultProgSha256FilePath);
                                 if (proc->state() == QProcess::Running)
                                 {
                                     anqDebug("=> Try Timed Out !");
                                 }
                                 else
-                                    anqDebug("=> Try Completed !");)
+                                    anqDebug("=> Try Completed !");
+                                anqDebug("---------------------------------------------------------------------");
+                                qDebugAWholeFile(_DefaultProgSha256FilePath);
+                                anqDebug("---------------------------------------------------------------------");
+                                )
                                 proc->close();
 #endif
                             } while(!QFile::exists(_DefaultProgSha256FilePath));
@@ -608,7 +619,7 @@ int main(int argc, char *argv[])
                         QFile::remove(_DefaultProgFilePath);
                         if (QFile::copy(_DefaultTmpProgFilePath,_DefaultProgFilePath))
                         {
-                            anqDebug("=> Successfully Update The Program !");
+                            anqDebug("=> Successfully UPDATE The Program !");
                             anqDebug("=> Start Rebooting The System !");
 #ifdef Q_OS_WIN
                             qDebug() << "This Program Is Only For Testing Purpose On Windows";
@@ -650,10 +661,12 @@ int main(int argc, char *argv[])
                                 anqDebug("=> The System Is About To Reboot !");
                             anqDebug("---------------------------------------------------------------------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                            anqDebug("---------------------------------------------------------------------");)
+                            anqDebug("---------------------------------------------------------------------");
+                            )
                             proc->close();
 #endif
                             a.quit();
+                            return a.exec();
                         }
                     }
                 }
@@ -679,5 +692,6 @@ int main(int argc, char *argv[])
         anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);)
         GoSleep(SleepTime);
     }
+    a.quit();
     return a.exec();
 }
