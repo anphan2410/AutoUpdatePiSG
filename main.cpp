@@ -107,10 +107,39 @@ int main(int argc, char *argv[])
     quint8 count0 = 0;
     while (true)
     {
+        //<Start Timing Here If Needed>
         anDebugCode(anqMsgCapture.clear();)
         anqDebug("=======================================================================");
         anqDebug("=====================START A NEW UPDATE CYCLE =========================");
-        //<Start Timing Here If Needed>
+        //Ping www.google.com 7 times to refresh connections
+#ifdef Q_OS_WIN
+        qDebug() << "This Program Is Only For Testing Purpose On Windows";
+        qDebug() << "Please MANUALLY Check The Internet Connection";
+        system("pause");
+#else
+        anqDebug("=> Try Checking The Internet Connection ...");
+        anDebugCode(
+        proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
+        proc->start("ping -c 7 www.google.com");
+        proc->waitForFinished(TimeOutInMilisecondForADownloadOfConfigFile*7);
+        anDebugCode(
+        proc->setStandardOutputFile(QProcess::nullDevice());
+        anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
+        qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
+        anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
+        if (proc->state() == QProcess::Running)
+        {
+            anqDebug("=> Try Timed Out !");
+            anqDebug("=> Failed To Connect To The Internet !");
+        }
+        else
+        {
+            anqDebug("=> Try Completed !");
+            anqDebug("=> Successfully Verify The Internet Connection !");
+        }
+        )
+        proc->close();
+#endif
         QFile::remove(_DefaultConfigFilePath);
         anqDebug("=> Start Downloading A Config File !");
         anqDebug("   " _VarView(TimesToTryDownloadingConfigFile));
