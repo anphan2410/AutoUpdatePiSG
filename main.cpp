@@ -674,7 +674,7 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Completed !");
                                 anqDebug("=> The System Is About To Reboot !");
-                                anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);
+                                anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);)
                                 proc->close();
                                 a.quit();
                                 return a.exec();
