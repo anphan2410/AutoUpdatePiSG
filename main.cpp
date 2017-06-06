@@ -667,7 +667,7 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Timed Out !");
                                 anqDebug("=> ERROR OCCURRED !");
-                                anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);
+                                anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);)
                                 proc->close();
                             }
                             else
