@@ -644,9 +644,10 @@ int main(int argc, char *argv[])
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");)
                             proc->close();
-                            anqDebug("=> Try Rebooting ...");
-                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
                             //Reboot
+                            anqDebug("=> Try Rebooting ...");
+                            anDebugCode(
+                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
