@@ -144,9 +144,9 @@ int main(int argc, char *argv[])
             {
                 anqDebug("=> Try Completed !");
             }
-            anqDebug("---------------------------------------------------------------------");
+            anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-            anqDebug("---------------------------------------------------------------------");
+            anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
             )
             proc->close();
 #endif
@@ -344,9 +344,9 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Completed !");
                             }
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
                             )
                             proc->close();
 #endif
@@ -380,9 +380,9 @@ int main(int argc, char *argv[])
                                 }
                                 else
                                     anqDebug("=> Try Completed !");
-                                anqDebug("---------------------------------------------------------------------");
+                                anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                                 qDebugAWholeFile(_DefaultScriptSha256FilePath);
-                                anqDebug("---------------------------------------------------------------------");
+                                anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
                                 )
                                 proc->close();
 #endif
@@ -445,9 +445,9 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Completed !");
                         }
                         anqDebug("=> Script Execution Standard Output Captured !");
-                        anqDebug("---------------------------------------------------------------------");
+                        anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                         qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                        anqDebug("---------------------------------------------------------------------");
+                        anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
                         )
                         proc->close();
 #endif
@@ -537,9 +537,9 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Completed !");
                             }
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
                             )
                             proc->close();
 #endif
@@ -573,9 +573,9 @@ int main(int argc, char *argv[])
                                 }
                                 else
                                     anqDebug("=> Try Completed !");
-                                anqDebug("---------------------------------------------------------------------");
+                                anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                                 qDebugAWholeFile(_DefaultProgSha256FilePath);
-                                anqDebug("---------------------------------------------------------------------");
+                                anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
                                 )
                                 proc->close();
 #endif
@@ -640,9 +640,9 @@ int main(int argc, char *argv[])
                             }
                             else
                                 anqDebug("=> Successfully Set Executable Attribute Of The Program File !");
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                            anqDebug("---------------------------------------------------------------------");)
+                            anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");)
                             proc->close();
                             //Reboot
                             anqDebug("=> Try Rebooting ...");
@@ -661,9 +661,9 @@ int main(int argc, char *argv[])
                             }
                             else
                                 anqDebug("=> The System Is About To Reboot !");
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------v-------v-------v-------v-------v-------v-------v-------v-------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
-                            anqDebug("---------------------------------------------------------------------");
+                            anqDebug("-------^-------^-------^-------^-------^-------^-------^-------^-------");
                             anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);
                             )
                             proc->close();
