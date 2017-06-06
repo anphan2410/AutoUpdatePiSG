@@ -61,10 +61,10 @@ void anqMsgHandler(QtMsgType, const QMessageLogContext &, const QString & msg)
     std::cout << msg.toStdString() << std::endl;
 }
 
-void anqMsgCaptureToFile(const QString &ADestinationFilePath)
+void anqMsgCaptureToFile(const QString &ADestinationFilePath, QIODevice::OpenModeFlag WriteIntoFileMode = QIODevice::Truncate)
 {
     QFile LastUpdateCycleStandardOutputCapture(ADestinationFilePath);
-    if (LastUpdateCycleStandardOutputCapture.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+    if (LastUpdateCycleStandardOutputCapture.open(QIODevice::WriteOnly | WriteIntoFileMode)) {
         QTextStream OutputMessagesIntoFile(&LastUpdateCycleStandardOutputCapture);
         OutputMessagesIntoFile << anqMsgCapture << endl;
     }
@@ -648,6 +648,7 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Rebooting ...");
                             anDebugCode(
                             anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
+                            anqMsgCapture.clear();
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
@@ -663,6 +664,7 @@ int main(int argc, char *argv[])
                             anqDebug("---------------------------------------------------------------------");
                             qDebugAWholeFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqDebug("---------------------------------------------------------------------");
+                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);
                             )
                             proc->close();
 #endif
