@@ -620,7 +620,6 @@ int main(int argc, char *argv[])
                         if (QFile::copy(_DefaultTmpProgFilePath,_DefaultProgFilePath))
                         {
                             anqDebug("=> Successfully UPDATE The Program !");
-                            anqDebug("=> Start Rebooting The System !");
 #ifdef Q_OS_WIN
                             qDebug() << "This Program Is Only For Testing Purpose On Windows";
                             qDebug() << "This Step Can Not Be Imitated !";
@@ -629,11 +628,10 @@ int main(int argc, char *argv[])
 #else
                             anqDebug("=> Try Setting Executable Attribute ...");
                             anDebugCode(
-                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             //Set File Attribute To Executable
                             proc->start("chmod +777 " _DefaultProgFilePath);
-                            proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
+                            proc->waitForFinished(TimeOutInMilisecondForADownloadOfScriptFile);
                             anDebugCode(
                             proc->setStandardOutputFile(QProcess::nullDevice());
                             if (proc->state() == QProcess::Running)
@@ -647,7 +645,9 @@ int main(int argc, char *argv[])
                             anqDebug("---------------------------------------------------------------------");)
                             proc->close();
                             anqDebug("=> Try Rebooting ...");
+                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
                             //Reboot
+                            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
