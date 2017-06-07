@@ -96,8 +96,8 @@ int main(int argc, char *argv[])
     QProcess * proc = new QProcess();
     proc->setProcessChannelMode(QProcess::MergedChannels);
 #endif
-    quint8 PollingRate = 16;//_DefaultPollingRate;
-    QTime CheckPoint = QTime::fromString("16:36:00","hh:mm:ss");//_DefaultCheckPoint;
+    quint8 PollingRate = _DefaultPollingRate;
+    QTime CheckPoint = _DefaultCheckPoint;
     quint8 TimesToTryDownloadingConfigFile = _DefaultTimesToTryDownloadingConfigFile;
     int TimeOutInMilisecondForADownloadOfConfigFile = _DefaultTimeOutInSecondForADownloadOfConfigFile*1000;
     quint8 TimesToTryDownloadingScriptFile = _DefaultTimesToTryDownloadingScriptFile;
