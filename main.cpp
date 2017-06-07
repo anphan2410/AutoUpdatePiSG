@@ -19,7 +19,7 @@
 
 #define _DefaultAutoUpdatePiSGFolderPath _TildeDirectory "/AutoUpdatePiSG"
 #define _DefaultConfigFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.conf"
-#define _DefaultConfigFileLink "http://tamduongs.com:82/iot/AutoUpdatePiSG.conf"
+#define _DefaultConfigFileLink "http://tamduongs.com:82/iot/AutoUpdatePiSG/AutoUpdatePiSG.conf"
 #define _DefaultScriptSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256"
 #define _DefaultScriptFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.sh"
 #define _DefaultProgSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ProgSha256"
