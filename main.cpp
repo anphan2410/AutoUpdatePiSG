@@ -726,6 +726,8 @@ int main(int argc, char *argv[])
             })
         }
         //<Stop Timing Here If Needed>
+        anqDebug("=> TAKE A BREAK !");
+        anqDebug("   " _VarView(CheckPoint.toString()));
         anqDebug("=> Calculate Time To Next Check Point ...");
         int BreakInterval = 86400000/PollingRate;
         int TimePoint = CheckPoint.msecsSinceStartOfDay();
@@ -734,6 +736,8 @@ int main(int argc, char *argv[])
         {
             TimePoint -= BreakInterval;
         }
+        anqDebug("   Original TimePoint=" + QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
+        anqDebug("   Break Interval=" + QTime::fromMSecsSinceStartOfDay(BreakInterval).toString("hh:mm:ss"));
         do
         {
             TimePoint += BreakInterval;
