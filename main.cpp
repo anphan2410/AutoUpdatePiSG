@@ -85,6 +85,7 @@ void qDebugAWholeFile(const QString &ASourceFilePath)
 
 int main(int argc, char *argv[])
 {
+    GoSleep(7000);//This Line Is Not Redundant But For Crucial Purposes
     anDebugCode(qInstallMessageHandler(anqMsgHandler);)
     QCoreApplication a(argc, argv);
     QTimer quitThisQtApp;
