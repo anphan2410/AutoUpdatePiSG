@@ -26,7 +26,7 @@
 #define _DefaultTmpProgFolderPath _DefaultAutoUpdatePiSGFolderPath "/Flipper1"
 #define _DefaultTmpProgFilePath _DefaultTmpProgFolderPath "/FlipperDemo"
 #define _DefaultProgFilePath _TildeDirectory "/Flipper1/FlipperDemo"
-#define _DefaultPollingRate 2
+#define _DefaultPollingRate 8
 #define _DefaultCheckPoint QTime::fromString("14:30:00","hh:mm:ss")
 #define _DefaultTimesToTryDownloadingConfigFile 11
 #define _DefaultTimeOutInSecondForADownloadOfConfigFile 47
@@ -728,8 +728,12 @@ int main(int argc, char *argv[])
         //<Stop Timing Here If Needed>
         anqDebug("=> Calculate Time To Next Check Point ...");
         int BreakInterval = 86400000/PollingRate;
-        int TimePoint = CheckPoint.msecsSinceStartOfDay() - BreakInterval;
+        int TimePoint = CheckPoint.msecsSinceStartOfDay();
         int SleepTime = 0;
+        while (TimePoint > 0)
+        {
+            TimePoint -= BreakInterval;
+        }
         do
         {
             TimePoint += BreakInterval;
