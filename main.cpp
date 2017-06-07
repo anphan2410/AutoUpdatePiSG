@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <QTime>
+#include <QTimer>
 #include <QProcess>
 #include <QFile>
 #include <QTextStream>
@@ -86,6 +87,10 @@ int main(int argc, char *argv[])
 {
     anDebugCode(qInstallMessageHandler(anqMsgHandler);)
     QCoreApplication a(argc, argv);
+    QTimer quitThisQtApp;
+    quitThisQtApp.setInterval(7000);
+    quitThisQtApp.setSingleShot(true);
+    QObject::connect(&quitThisQtApp, &QTimer::timeout, [&a](){a.quit();});
 #ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
     proc->setProcessChannelMode(QProcess::MergedChannels);
@@ -704,7 +709,8 @@ int main(int argc, char *argv[])
                                 anqDebug("=> The System Is About To Reboot !");
                                 anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);)
                                 proc->close();
-                                a.quit();
+                                //quit this qt app within 7 seconds
+                                quitThisQtApp.start();
                                 return a.exec();
                             }
 #endif
@@ -733,6 +739,7 @@ int main(int argc, char *argv[])
         anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);)
         GoSleep(SleepTime);
     }
-    a.quit();
+    //quit this qt app within 7 seconds
+    quitThisQtApp.start();
     return a.exec();
 }
