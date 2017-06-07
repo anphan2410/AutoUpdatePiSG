@@ -736,7 +736,7 @@ int main(int argc, char *argv[])
         {
             TimePoint -= BreakInterval;
         }
-        anqDebug("   Original TimePoint=" + QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
+        anqDebug("   Original TimePoint=" + QTime::fromMSecsSinceStartOfDay(TimePoint+BreakInterval).toString("hh:mm:ss"));
         anqDebug("   Break Interval=" + QTime::fromMSecsSinceStartOfDay(BreakInterval).toString("hh:mm:ss"));
         do
         {
