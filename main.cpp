@@ -86,15 +86,15 @@ void qDebugAWholeFile(const QString &ASourceFilePath)
 
 int main(int argc, char *argv[])
 {
-    anqDebug("***********************************************************************");
-    anqDebug("################### START AUTOUPDATEPISG PROGRAM ######################");
-    GoSleep(7000);//This Line Is Not Redundant But For Crucial Purposes
     anDebugCode(qInstallMessageHandler(anqMsgHandler);)
     QCoreApplication a(argc, argv);
     QTimer quitThisQtApp;
     quitThisQtApp.setInterval(7000);
     quitThisQtApp.setSingleShot(true);
     QObject::connect(&quitThisQtApp, &QTimer::timeout, [&a](){a.quit();});
+    anqDebug("***********************************************************************");
+    anqDebug("################### START AUTOUPDATEPISG PROGRAM ######################");
+    GoSleep(7000);//This Line Is Not Redundant But For Crucial Purposes
 #ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
     proc->setProcessChannelMode(QProcess::MergedChannels);
@@ -259,6 +259,10 @@ int main(int argc, char *argv[])
             )
             proc->close();
 #endif
+            if (QFile(_DefaultConfigFilePath).size() < 47)
+            {
+                QFile::remove(_DefaultConfigFilePath);
+            }
         } while (!QFile::exists(_DefaultConfigFilePath));
         if (count0<=TimesToTryDownloadingConfigFile)
         {
@@ -496,6 +500,10 @@ int main(int argc, char *argv[])
                             )
                             proc->close();
 #endif
+                            if (QFile(_DefaultScriptFilePath).size() < 47)
+                            {
+                                QFile::remove(_DefaultScriptFilePath);
+                            }
                         } while (!QFile::exists(_DefaultScriptFilePath));
                         if (count1<=TimesToTryDownloadingScriptFile)
                         {
@@ -688,6 +696,10 @@ int main(int argc, char *argv[])
                             )
                             proc->close();
 #endif
+                            if (QFile(_DefaultTmpProgFilePath).size() < 47)
+                            {
+                                QFile::remove(_DefaultTmpProgFilePath);
+                            }
                         } while (!QFile::exists(_DefaultTmpProgFilePath));
                         if (count1<=TimesToTryDownloadingProgFile)
                         {
