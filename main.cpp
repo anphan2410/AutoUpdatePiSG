@@ -4,6 +4,7 @@
 #include <QProcess>
 #include <QFile>
 #include <QTextStream>
+#include <QStringList>
 #include "anqtdebug.h"
 #include <iostream>
 #include <QtMessageHandler>
@@ -19,7 +20,7 @@
 
 #define _DefaultAutoUpdatePiSGFolderPath _TildeDirectory "/AutoUpdatePiSG"
 #define _DefaultConfigFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.conf"
-#define _DefaultConfigFileLink "http://tamduongs.com:82/iot/AutoUpdatePiSG/AutoUpdatePiSG.conf"
+#define _DefaultConfigFileLink "http://tamduongs.com:80/iot/AutoUpdatePiSG/AutoUpdatePiSG.conf"
 #define _DefaultScriptSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ScriptSha256"
 #define _DefaultScriptFilePath _DefaultAutoUpdatePiSGFolderPath "/AutoUpdatePiSG.sh"
 #define _DefaultProgSha256FilePath _DefaultAutoUpdatePiSGFolderPath "/.ProgSha256"
@@ -31,10 +32,10 @@
 #define _DefaultTimesToTryDownloadingConfigFile 11
 #define _DefaultTimeOutInSecondForADownloadOfConfigFile 47
 #define _DefaultTimesToTryDownloadingScriptFile 7
-#define _DefaultTimeOutInSecondForADownloadOfScriptFile 60
-#define _DefaultTimeOutInSecondForScriptFileExecution 600
+#define _DefaultTimeOutInSecondForADownloadOfScriptFile 77
+#define _DefaultTimeOutInSecondForScriptFileExecution 777
 #define _DefaultTimesToTryDownloadingProgFile 7
-#define _DefaultTimeOutInSecondForADownloadOfProgFile 240
+#define _DefaultTimeOutInSecondForADownloadOfProgFile 777
 
 anDebugCode(
 #define _DefaultLastQProcessStandardOutputFilePath _DefaultAutoUpdatePiSGFolderPath "/LastQProcessStandardOutputCapture.info"
@@ -85,6 +86,8 @@ void qDebugAWholeFile(const QString &ASourceFilePath)
 
 int main(int argc, char *argv[])
 {
+    anqDebug("***********************************************************************");
+    anqDebug("################### START AUTOUPDATEPISG PROGRAM ######################");
     GoSleep(7000);//This Line Is Not Redundant But For Crucial Purposes
     anDebugCode(qInstallMessageHandler(anqMsgHandler);)
     QCoreApplication a(argc, argv);
@@ -96,8 +99,14 @@ int main(int argc, char *argv[])
     QProcess * proc = new QProcess();
     proc->setProcessChannelMode(QProcess::MergedChannels);
 #endif
+    anqDebug("=> Load Default Settings !");
+    QString ConfigLink = _DefaultConfigFileLink;
     quint8 PollingRate = _DefaultPollingRate;
     QTime CheckPoint = _DefaultCheckPoint;
+    QString ScriptSha256 = "";
+    QString ScriptLink = "";
+    QString ProgSha256 = "";
+    QString ProgLink = "";
     quint8 TimesToTryDownloadingConfigFile = _DefaultTimesToTryDownloadingConfigFile;
     int TimeOutInMilisecondForADownloadOfConfigFile = _DefaultTimeOutInSecondForADownloadOfConfigFile*1000;
     quint8 TimesToTryDownloadingScriptFile = _DefaultTimesToTryDownloadingScriptFile;
@@ -105,10 +114,41 @@ int main(int argc, char *argv[])
     int TimeOutInMilisecondForScriptFileExecution = _DefaultTimeOutInSecondForScriptFileExecution*1000;
     quint8 TimesToTryDownloadingProgFile = _DefaultTimesToTryDownloadingProgFile;
     int TimeOutInMilisecondForADownloadOfProgFile = _DefaultTimeOutInSecondForADownloadOfProgFile*1000;
-    QString ScriptSha256 = "";
-    QString ScriptLink = "";
-    QString ProgSha256 = "";
-    QString ProgLink = "";
+    if (QFile::exists(_DefaultConfigFilePath))
+    {
+        anqDebug("=> Found A Config File AutoUpdatePiSG.conf !");
+        anqDebug("=> Try Fetching A Config File Link ...");
+        QFile aConfigFile(_DefaultConfigFilePath);
+        if (aConfigFile.open(QIODevice::ReadOnly))
+        {
+            anqDebug("=> Try Completed !");
+            anqDebug("=> Successfully Read The Config File !");
+            QTextStream readFile(&aConfigFile);
+            while (!readFile.atEnd())
+            {
+                QStringList parsedParamsInOneLine = readFile.readLine().split('=');
+                if (parsedParamsInOneLine.contains("ConfigLink"))
+                {
+                    ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("ConfigLink")+1).trimmed();
+                    anqDebug("   " _VarView(ConfigLink));
+                    if (ConfigLink.isEmpty())
+                    {
+                        ConfigLink = _DefaultConfigFileLink;
+                        anqDebug("   -> Invalid -> Load Default !");
+                        anqDebug("   " _VarView(ConfigLink));
+                    }
+                }
+            }
+            aConfigFile.close();
+        }
+        anDebugCode(
+        else
+        {
+            anqDebug("=> Try Failed !");
+            anqDebug("=> Failed To Read The Config File !");
+        }
+        )
+    }
     quint8 count0 = 0;
     while (true)
     {
@@ -116,6 +156,21 @@ int main(int argc, char *argv[])
         anDebugCode(anqMsgCapture.clear();)
         anqDebug("=======================================================================");
         anqDebug("=====================START A NEW UPDATE CYCLE =========================");
+        anqDebug("=> Check The Current Settings ...");
+        anqDebug("   " _VarView(ConfigLink));
+        anqDebug("   " _VarView(PollingRate));
+        anqDebug("   " _VarView(CheckPoint.toString()));
+        anqDebug("   " _VarView(ScriptSha256));
+        anqDebug("   " _VarView(ScriptLink));
+        anqDebug("   " _VarView(ProgSha256));
+        anqDebug("   " _VarView(ProgLink));
+        anqDebug("   " _VarView(TimesToTryDownloadingConfigFile));
+        anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfConfigFile));
+        anqDebug("   " _VarView(TimesToTryDownloadingScriptFile));
+        anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfScriptFile));
+        anqDebug("   " _VarView(TimeOutInMilisecondForScriptFileExecution));
+        anqDebug("   " _VarView(TimesToTryDownloadingProgFile));
+        anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfProgFile));
         //Ping www.google.com 7 times to refresh connections
 #ifdef Q_OS_WIN
         qDebug() << "This Program Is Only For Testing Purpose On Windows";
@@ -145,16 +200,31 @@ int main(int argc, char *argv[])
         )
         proc->close();
 #endif
-        QFile::remove(_DefaultConfigFilePath);
         anqDebug("=> Start Downloading A Config File !");
         anqDebug("   " _VarView(TimesToTryDownloadingConfigFile));
         anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfConfigFile));
         do
         {
-            if (++count0 > TimesToTryDownloadingConfigFile)
+            QFile::remove(_DefaultConfigFilePath);
+            if ((++count0) > TimesToTryDownloadingConfigFile)
             {
-                anqDebug("=> Failed To Download The Config File !");
-                break;
+                if (ConfigLink != _DefaultConfigFileLink)
+                {
+                    anqDebug("=> Failed To Download The Config File With The Given Config Link !");
+                    anqDebug("   " _VarView(ConfigLink));
+                    anqDebug("=> Load The Default Config Link !");
+                    ConfigLink = _DefaultConfigFileLink;
+                    anqDebug("   " _VarView(ConfigLink));
+                    anqDebug("=> Restart Downloading A Config File !");
+                    anqDebug("   " _VarView(TimesToTryDownloadingConfigFile));
+                    anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfConfigFile));
+                    count0 = 0;
+                }
+                else
+                {
+                    anqDebug("=> Failed To Download The Config File !");
+                    break;
+                }
             }
 #ifdef Q_OS_WIN
             qDebug() << "This Program Is Only For Testing Purpose On Windows";
@@ -166,7 +236,7 @@ int main(int argc, char *argv[])
             anqDebug("=> Try Downloading The Config File ...");
             anDebugCode(
             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
-            proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" _DefaultConfigFileLink "\"");
+            proc->start("wget -O " _DefaultConfigFilePath " \"" + ConfigLink + "\"");
             proc->waitForFinished(TimeOutInMilisecondForADownloadOfConfigFile);
             anDebugCode(
             proc->setStandardOutputFile(QProcess::nullDevice());
@@ -198,23 +268,38 @@ int main(int argc, char *argv[])
                while (!scanconfigFile.atEnd())
                {
                     parsedParamsInOneLine = scanconfigFile.readLine().split('=');
-                    if (parsedParamsInOneLine.contains("PollingRate"))
+                    if (parsedParamsInOneLine.contains("ConfigLink"))
+                    {
+                        ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("ConfigLink")+1).trimmed();
+                        anqDebug("   " _VarView(ConfigLink));
+                        if (ConfigLink.isEmpty())
+                        {
+                            ConfigLink = _DefaultConfigFileLink;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(ConfigLink));
+                        }
+                    }
+                    else if (parsedParamsInOneLine.contains("PollingRate"))
                     {
                         PollingRate = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("PollingRate")+1).trimmed().toInt();
+                        anqDebug("   " _VarView(PollingRate));
                         if (!PollingRate)
                         {
                             PollingRate = _DefaultPollingRate;
-                        }
-                        anqDebug("   " _VarView(PollingRate));
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(PollingRate));
+                        }                        
                     }
                     else if (parsedParamsInOneLine.contains("TimePoint"))
                     {
                         CheckPoint = QTime::fromString(parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimePoint")+1).trimmed(),"hh:mm:ss");
+                        anqDebug("   " _VarView(CheckPoint.toString("hh:mm:ss")));
                         if (CheckPoint.isNull() || !CheckPoint.isValid())
                         {
                             CheckPoint = _DefaultCheckPoint;
-                        }
-                        anqDebug("   " _VarView(CheckPoint.toString("hh:mm:ss")));
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(CheckPoint.toString("hh:mm:ss")));
+                        }                        
                     }
                     else if (parsedParamsInOneLine.contains("ScriptSha256"))
                     {
@@ -240,56 +325,78 @@ int main(int argc, char *argv[])
                     {
                         TimesToTryDownloadingConfigFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimesToTryDownloadingConfigFile")+1).trimmed().toInt();
                         anqDebug("   " _VarView(TimesToTryDownloadingConfigFile));
+                        if (!TimesToTryDownloadingConfigFile)
+                        {
+                            TimesToTryDownloadingConfigFile = _DefaultTimesToTryDownloadingConfigFile;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimesToTryDownloadingConfigFile));
+                        }
                     }
                     else if (parsedParamsInOneLine.contains("TimesToTryDownloadingScriptFile"))
                     {
                         TimesToTryDownloadingScriptFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimesToTryDownloadingScriptFile")+1).trimmed().toInt();
                         anqDebug("   " _VarView(TimesToTryDownloadingScriptFile));
+                        if (!TimesToTryDownloadingScriptFile)
+                        {
+                            TimesToTryDownloadingScriptFile = _DefaultTimesToTryDownloadingScriptFile;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimesToTryDownloadingScriptFile));
+                        }
                     }
                     else if (parsedParamsInOneLine.contains("TimesToTryDownloadingProgFile"))
                     {
                         TimesToTryDownloadingProgFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimesToTryDownloadingProgFile")+1).trimmed().toInt();
                         anqDebug("   " _VarView(TimesToTryDownloadingProgFile));
+                        if (!TimesToTryDownloadingProgFile)
+                        {
+                            TimesToTryDownloadingProgFile = _DefaultTimesToTryDownloadingProgFile;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimesToTryDownloadingProgFile));
+                        }
                     }
                     else if (parsedParamsInOneLine.contains("TimeOutInSecondForADownloadOfConfigFile"))
                     {
-                        TimeOutInMilisecondForADownloadOfConfigFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForADownloadOfConfigFile")+1).trimmed().toInt();
-                        if (TimeOutInMilisecondForADownloadOfConfigFile<7)
-                        {
-                            TimeOutInMilisecondForADownloadOfConfigFile = _DefaultTimeOutInSecondForADownloadOfConfigFile;
-                        }
-                        TimeOutInMilisecondForADownloadOfConfigFile *= 1000;
+                        TimeOutInMilisecondForADownloadOfConfigFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForADownloadOfConfigFile")+1).trimmed().toInt()*1000;
                         anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfConfigFile));
+                        if (TimeOutInMilisecondForADownloadOfConfigFile<7000)
+                        {
+                            TimeOutInMilisecondForADownloadOfConfigFile = _DefaultTimeOutInSecondForADownloadOfConfigFile*1000;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfConfigFile));
+                        }
                     }
                     else if (parsedParamsInOneLine.contains("TimeOutInSecondForADownloadOfScriptFile"))
                     {
-                        TimeOutInMilisecondForADownloadOfScriptFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForADownloadOfScriptFile")+1).trimmed().toInt();
-                        if (TimeOutInMilisecondForADownloadOfScriptFile<11)
-                        {
-                            TimeOutInMilisecondForADownloadOfScriptFile = _DefaultTimeOutInSecondForADownloadOfScriptFile;
-                        }
-                        TimeOutInMilisecondForADownloadOfScriptFile *= 1000;
+                        TimeOutInMilisecondForADownloadOfScriptFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForADownloadOfScriptFile")+1).trimmed().toInt()*1000;
                         anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfScriptFile));
+                        if (TimeOutInMilisecondForADownloadOfScriptFile<11000)
+                        {
+                            TimeOutInMilisecondForADownloadOfScriptFile = _DefaultTimeOutInSecondForADownloadOfScriptFile*1000;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfScriptFile));
+                        }
                     }
                     else if (parsedParamsInOneLine.contains("TimeOutInSecondForScriptFileExecution"))
                     {
-                        TimeOutInMilisecondForScriptFileExecution = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForScriptFileExecution")+1).trimmed().toInt();
-                        if (TimeOutInMilisecondForScriptFileExecution<27)
-                        {
-                            TimeOutInMilisecondForScriptFileExecution = _DefaultTimeOutInSecondForScriptFileExecution;
-                        }
-                        TimeOutInMilisecondForScriptFileExecution *= 1000;
+                        TimeOutInMilisecondForScriptFileExecution = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForScriptFileExecution")+1).trimmed().toInt()*1000;
                         anqDebug("   " _VarView(TimeOutInMilisecondForScriptFileExecution));
+                        if (TimeOutInMilisecondForScriptFileExecution<27000)
+                        {
+                            TimeOutInMilisecondForScriptFileExecution = _DefaultTimeOutInSecondForScriptFileExecution*1000;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimeOutInMilisecondForScriptFileExecution));
+                        }
                     }
                     else if (parsedParamsInOneLine.contains("TimeOutInSecondForADownloadOfProgFile"))
                     {
-                        TimeOutInMilisecondForADownloadOfProgFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForADownloadOfProgFile")+1).trimmed().toInt();
-                        if (TimeOutInMilisecondForADownloadOfProgFile<24)
-                        {
-                            TimeOutInMilisecondForADownloadOfProgFile = _DefaultTimeOutInSecondForADownloadOfProgFile;
-                        }
-                        TimeOutInMilisecondForADownloadOfProgFile *= 1000;
+                        TimeOutInMilisecondForADownloadOfProgFile = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("TimeOutInSecondForADownloadOfProgFile")+1).trimmed().toInt()*1000;
                         anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfProgFile));
+                        if (TimeOutInMilisecondForADownloadOfProgFile<24000)
+                        {
+                            TimeOutInMilisecondForADownloadOfProgFile = _DefaultTimeOutInSecondForADownloadOfProgFile*1000;
+                            anqDebug("   -> Invalid -> Load Default !");
+                            anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfProgFile));
+                        }
                     }
                }
                configFile.close();
@@ -333,7 +440,7 @@ int main(int argc, char *argv[])
                 }
                 anDebugWrap(!IsThereFileScriptSha256,
                                 anqDebug("=> Not Found Any .ScriptSha256 File !");
-                                );
+                );
                 if (tmpCondition || !IsThereFileScriptSha256)
                 {
                     quint8 count1 = 0;
@@ -345,13 +452,13 @@ int main(int argc, char *argv[])
                         {
                             anqDebug("=> Not Matched Sha256 Of The New Script !");
                             break;
-                        }
-                        QFile::remove(_DefaultScriptFilePath);
+                        }                        
                         anqDebug("=> Start Downloading A New Script File !");
                         anqDebug("   " _VarView(TimesToTryDownloadingScriptFile));
                         anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfScriptFile));
                         do
                         {
+                            QFile::remove(_DefaultScriptFilePath);
                             if (++count1>TimesToTryDownloadingScriptFile)
                             {
                                 break;
@@ -366,7 +473,7 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Downloading A Script File ...");
                             anDebugCode(
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
-                            proc->start("wget -P " _DefaultAutoUpdatePiSGFolderPath " \"" + ScriptLink + "\"");
+                            proc->start("wget -O " _DefaultScriptFilePath " \"" + ScriptLink + "\"");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfScriptFile);
                             anDebugCode(
                             proc->setStandardOutputFile(QProcess::nullDevice());
@@ -538,12 +645,12 @@ int main(int argc, char *argv[])
                             anqDebug("=> FAILED TO UPDATE The New Program !");
                             break;
                         }
-                        QFile::remove(_DefaultTmpProgFilePath);
                         anqDebug("=> Start Downloading A New Program File !");
                         anqDebug("   " _VarView(TimesToTryDownloadingProgFile));
                         anqDebug("   " _VarView(TimeOutInMilisecondForADownloadOfProgFile));
                         do
                         {
+                            QFile::remove(_DefaultTmpProgFilePath);
                             if (++count1>TimesToTryDownloadingProgFile)
                             {
                                 break;
@@ -558,7 +665,7 @@ int main(int argc, char *argv[])
                             anqDebug("=> Try Downloading A Program File ...");
                             anDebugCode(
                             proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
-                            proc->start("wget -P " _DefaultTmpProgFolderPath " \"" + ProgLink + "\"");
+                            proc->start("wget -O " _DefaultTmpProgFilePath " \"" + ProgLink + "\"");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
                             proc->setStandardOutputFile(QProcess::nullDevice());
@@ -591,7 +698,7 @@ int main(int argc, char *argv[])
                                 qDebug() << "This Program Is Only For Testing Purpose On Windows";
                                 qDebug() << "Please MANUALLY Write Sha256Sum Of FlipperDemo Into .ProgSha256";
                                 qDebug() << "Then Place File .ProgSha256 Into The Following Path:";
-                                qDebug() << _DefaultTmpProgFolderPath;
+                                qDebug() << _DefaultAutoUpdatePiSGFolderPath;
                                 system("pause");
 #else
                                 anqDebug("=> Try Calculating Sha256 Of The New Prog File ...");
@@ -744,7 +851,15 @@ int main(int argc, char *argv[])
             SleepTime = TimePoint -QTime::currentTime().msecsSinceStartOfDay();
         } while (SleepTime < 0);
         anqDebug("   " _VarView(SleepTime) " milisecond");
-        anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
+        anDebugCode(
+        if (TimePoint <= 86400000)
+        {
+            anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
+        }
+        else
+        {
+            anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint-86400000).toString("hh:mm:ss"));
+        })
         anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);)
         GoSleep(SleepTime);
     }
