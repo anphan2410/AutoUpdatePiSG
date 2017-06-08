@@ -127,9 +127,9 @@ int main(int argc, char *argv[])
             while (!readFile.atEnd())
             {
                 QStringList parsedParamsInOneLine = readFile.readLine().split('=');
-                if (parsedParamsInOneLine.contains("ConfigLink"))
+                if (parsedParamsInOneLine.contains("NextConfigLink"))
                 {
-                    ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("ConfigLink")+1).trimmed();
+                    ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("NextConfigLink")+1).trimmed();
                     anqDebug("   " _VarView(ConfigLink));
                     if (ConfigLink.isEmpty())
                     {
@@ -152,8 +152,13 @@ int main(int argc, char *argv[])
     quint8 count0 = 0;
     while (true)
     {
-        //<Start Timing Here If Needed>
         anDebugCode(anqMsgCapture.clear();)
+        //Reinitialize Variables
+        ScriptLink = "";
+        ScriptSha256 = "";
+        ProgLink = "";
+        ProgSha256 = "";
+        //<Start Timing Here If Needed>
         anqDebug("=======================================================================");
         anqDebug("=====================START A NEW UPDATE CYCLE =========================");
         anqDebug("=> Check The Current Settings ...");
@@ -268,9 +273,9 @@ int main(int argc, char *argv[])
                while (!scanconfigFile.atEnd())
                {
                     parsedParamsInOneLine = scanconfigFile.readLine().split('=');
-                    if (parsedParamsInOneLine.contains("ConfigLink"))
+                    if (parsedParamsInOneLine.contains("NextConfigLink"))
                     {
-                        ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("ConfigLink")+1).trimmed();
+                        ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("NextConfigLink")+1).trimmed();
                         anqDebug("   " _VarView(ConfigLink));
                         if (ConfigLink.isEmpty())
                         {
@@ -400,7 +405,7 @@ int main(int argc, char *argv[])
                     }
                }
                configFile.close();
-               anqDebug("=> Successfully Parsed The Config File !");
+               anqDebug("=> Finish Parsing The Config File !");
             }
             anDebugCode(
             else
