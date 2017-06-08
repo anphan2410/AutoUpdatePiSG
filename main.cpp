@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     proc->setProcessChannelMode(QProcess::MergedChannels);
 #endif
     anqDebug("=> Load Default Settings !");
-    QString ConfigLink = _DefaultConfigFileLink;
+    QString ConfigLink = "";
     quint8 PollingRate = _DefaultPollingRate;
     QTime CheckPoint = _DefaultCheckPoint;
     QString ScriptSha256 = "";
@@ -122,7 +122,6 @@ int main(int argc, char *argv[])
         if (aConfigFile.open(QIODevice::ReadOnly))
         {
             anqDebug("=> Try Completed !");
-            anqDebug("=> Successfully Read The Config File !");
             QTextStream readFile(&aConfigFile);
             while (!readFile.atEnd())
             {
@@ -130,14 +129,15 @@ int main(int argc, char *argv[])
                 if (parsedParamsInOneLine.contains("NextConfigLink"))
                 {
                     ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("NextConfigLink")+1).trimmed();
-                    anqDebug("   " _VarView(ConfigLink));
-                    if (ConfigLink.isEmpty())
-                    {
-                        ConfigLink = _DefaultConfigFileLink;
-                        anqDebug("   -> Invalid -> Load Default !");
-                        anqDebug("   " _VarView(ConfigLink));
-                    }
+                    anqDebug("=> Successfully Read The Config Link !");
                 }
+            }
+            anqDebug("   " _VarView(ConfigLink));
+            if (ConfigLink.isEmpty())
+            {
+                anqDebug("   -> Invalid -> Load Default !");
+                ConfigLink = _DefaultConfigFileLink;
+                anqDebug("   " _VarView(ConfigLink));
             }
             aConfigFile.close();
         }
@@ -148,6 +148,10 @@ int main(int argc, char *argv[])
             anqDebug("=> Failed To Read The Config File !");
         }
         )
+    }
+    else
+    {
+        ConfigLink = _DefaultConfigFileLink;
     }
     quint8 count0 = 0;
     while (true)
