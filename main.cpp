@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     quitThisQtApp.setSingleShot(true);
     QObject::connect(&quitThisQtApp, &QTimer::timeout, [&a](){a.quit();});
     anqDebug("***********************************************************************");
-    anqDebug("################### START AUTOUPDATEPISG PROGRAM ######################");
+    anqDebug("############## START AUTO UPDATE PI BY ASCENX SAIGON ##################");
     GoSleep(7000);//This Line Is Not Redundant But For Crucial Purposes
 #ifndef Q_OS_WIN
     QProcess * proc = new QProcess();
