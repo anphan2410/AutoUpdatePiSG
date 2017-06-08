@@ -152,7 +152,6 @@ int main(int argc, char *argv[])
     quint8 count0 = 0;
     while (true)
     {
-        anDebugCode(anqMsgCapture.clear();)
         //Reinitialize Variables
         ScriptLink = "";
         ScriptSha256 = "";
@@ -810,9 +809,10 @@ int main(int argc, char *argv[])
                             //Reboot
                             anqDebug("=> Try Rebooting ...");
                             anDebugCode(
-                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
+                            anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);                            
+                            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);
                             anqMsgCapture.clear();
-                            proc->setStandardOutputFile(_DefaultLastQProcessStandardOutputFilePath);)
+                            )
                             proc->start("reboot");
                             proc->waitForFinished(TimeOutInMilisecondForADownloadOfProgFile);
                             anDebugCode(
@@ -832,7 +832,9 @@ int main(int argc, char *argv[])
                             {
                                 anqDebug("=> Try Completed !");
                                 anqDebug("=> The System Is About To Reboot !");
-                                anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);)
+                                anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath, QIODevice::Append);
+                                anqMsgCapture.clear();
+                                )
                                 proc->close();
                                 //quit this qt app within 7 seconds
                                 quitThisQtApp.start();
@@ -877,7 +879,10 @@ int main(int argc, char *argv[])
         {
             anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint-86400000).toString("hh:mm:ss"));
         })
-        anDebugCode(anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);)
+        anDebugCode(
+        anqMsgCaptureToFile(_DefaultLastUpdateCycleStandardOutputFilePath);
+        anqMsgCapture.clear();
+        )
         GoSleep(SleepTime);
     }
     //quit this qt app within 7 seconds
