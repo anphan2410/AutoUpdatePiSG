@@ -99,7 +99,6 @@ int main(int argc, char *argv[])
     QProcess * proc = new QProcess();
     proc->setProcessChannelMode(QProcess::MergedChannels);
 #endif
-    anqDebug("=> Load Default Settings !");
     QString ConfigLink = "";
     quint8 PollingRate = _DefaultPollingRate;
     QTime CheckPoint = _DefaultCheckPoint;
@@ -129,7 +128,7 @@ int main(int argc, char *argv[])
                 if (parsedParamsInOneLine.contains("NextConfigLink"))
                 {
                     ConfigLink = parsedParamsInOneLine.at(parsedParamsInOneLine.indexOf("NextConfigLink")+1).trimmed();
-                    anqDebug("=> Successfully Read The Config Link !");
+                    anqDebug("=> Successfully Fetch The Config Link !");
                 }
             }
             anqDebug("   " _VarView(ConfigLink));
@@ -151,20 +150,32 @@ int main(int argc, char *argv[])
     }
     else
     {
+        anqDebug("=> Not Found Any Config File AutoUpdatePiSG.conf !");
+        anqDebug("=> Load The Default Config Link !");
         ConfigLink = _DefaultConfigFileLink;
+        anqDebug("   " _VarView(ConfigLink));
     }
     quint8 count0 = 0;
     while (true)
     {
         //Reinitialize Variables
-        ScriptLink = "";
+        PollingRate = _DefaultPollingRate;
+        CheckPoint = _DefaultCheckPoint;
         ScriptSha256 = "";
-        ProgLink = "";
+        ScriptLink = "";
         ProgSha256 = "";
+        ProgLink = "";
+        TimesToTryDownloadingConfigFile = _DefaultTimesToTryDownloadingConfigFile;
+        TimeOutInMilisecondForADownloadOfConfigFile = _DefaultTimeOutInSecondForADownloadOfConfigFile*1000;
+        TimesToTryDownloadingScriptFile = _DefaultTimesToTryDownloadingScriptFile;
+        TimeOutInMilisecondForADownloadOfScriptFile = _DefaultTimeOutInSecondForADownloadOfScriptFile*1000;
+        TimeOutInMilisecondForScriptFileExecution = _DefaultTimeOutInSecondForScriptFileExecution*1000;
+        TimesToTryDownloadingProgFile = _DefaultTimesToTryDownloadingProgFile;
+        TimeOutInMilisecondForADownloadOfProgFile = _DefaultTimeOutInSecondForADownloadOfProgFile*1000;
         //<Start Timing Here If Needed>
         anqDebug("=======================================================================");
         anqDebug("=====================START A NEW UPDATE CYCLE =========================");
-        anqDebug("=> Check The Current Settings ...");
+        anqDebug("=> Checkout The Current Settings ...");
         anqDebug("   " _VarView(ConfigLink));
         anqDebug("   " _VarView(PollingRate));
         anqDebug("   " _VarView(CheckPoint.toString()));
@@ -418,7 +429,7 @@ int main(int argc, char *argv[])
             else
             {
                 anqDebug("=> Failed To Read The Config File !");
-                anqDebug("=> Failed To Update Neccessary Variables !");
+                anqDebug("=> Failed To Update Any Variable !");
             })
             if (ScriptSha256.size() == 64)
             {
