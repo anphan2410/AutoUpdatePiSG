@@ -886,7 +886,7 @@ int main(int argc, char *argv[])
         } while (SleepTime < 0);
         anqDebug("   " _VarView(SleepTime) " milisecond");
         anDebugCode(
-        if (TimePoint <= 86400000)
+        if (TimePoint < 86400000)
         {
             anqDebug("=> GET SLEEP UNTIL " << QTime::fromMSecsSinceStartOfDay(TimePoint).toString("hh:mm:ss"));
         }
